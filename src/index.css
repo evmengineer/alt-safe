@@ -1,0 +1,42 @@
+:root {
+  background-color: #1a1a1a; /* Charcoal Black */
+  color: #e0e0e0; /* Soft Light Gray */
+  color-scheme: dark;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  font-weight: 400;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    background-color: #f8f8f8; /* Light background for light mode */
+    color: #181818; /* Dark text for light mode */
+  }
+}
+
+/* Add custom CSS variables for theme colors */
+:root {
+  --primary-color: #387076; /* Muted Teal */
+  --secondary-color: #a68c5b; /* Brighter Dusty Gold for better visibility */
+  --background-surface: #2b2b2b; /* Dark Slate Gray */
+  --border-color: #4f4f4f; /* Dim Gray */
+  --text-primary: #e0e0e0; /* Soft Light Gray */
+  --text-secondary: #b0b0b0; /* Cool Gray */
+  --success-color: #547f4e; /* Moss Green */
+  --error-color: #9b3d3d; /* Brick Red */
+  --warning-color: #a6792c; /* Amber Brown */
+  --hover-background: #32383d; /* Soft Gunmetal */
+}
+
+.gradientText {
+  background: linear-gradient(90deg, #f8f4ef, #daff0a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
