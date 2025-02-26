@@ -11,14 +11,14 @@ const About: React.FC = () => {
         <strong>Who We Are</strong>
         <br />
         This project is a standalone initiative with no corporate backing or legal representation. It is the brainchild
-        of independent developers who are passionate about decentralization and blockchain technology. There is no
+        of independent developer(s) who are passionate about decentralization and blockchain technology. There is no
         formal organization or company behind this project, and it is operated as an open and experimental platform.
       </Typography>
       <Typography variant="body1" gutterBottom>
         <strong>Our Mission</strong>
         <br />
         Our mission is simple yet ambitious: to empower blockchain users by providing a seamless and decentralized way
-        to interact with Safe smart contracts. This project is designed to work without relying on any additional
+        to interact with Safe Smart Account contracts. This project is designed to work without relying on any additional
         backend services, ensuring that users retain full control over their data and transactions.
       </Typography>
       <Typography variant="body1" gutterBottom>

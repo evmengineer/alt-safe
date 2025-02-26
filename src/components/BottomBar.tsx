@@ -9,12 +9,10 @@ const BottomBar: React.FC = () => {
     <Grid container direction="row" alignItems="center" justifyContent="right" sx={{ padding: 2 }} spacing={2}>
       <Grid>
         <Link
-          component="button"
-          onClick={() => {
-            navigate("/terms");
-          }}
+          target="_blank"
+          href="https://github.com/evmengineer/alt-wallet/discussions/1"
         >
-          Terms
+          Help
         </Link>
       </Grid>
       <Grid>

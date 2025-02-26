@@ -11,7 +11,6 @@ import Welcome from "./components/Welcome.tsx";
 import CreateSafe from "./components/createSafe/CreateSafe.tsx";
 import About from "./components/other/About.tsx";
 import PrivacyPolicy from "./components/other/PrivacyPolicy.tsx";
-import Terms from "./components/other/Terms.tsx";
 import SafeInfo from "./components/safeInfo/SafeInfo.tsx";
 import AggregateSignaturesAndExecute from "./components/transaction/AggregateSignaturesAndExecute.tsx";
 import CreateTransaction from "./components/transaction/CreateTransaction.tsx";
@@ -38,7 +37,6 @@ function App() {
                   <Route path="/safe-info" element={<SafeInfo />} />
                   <Route path="/import" element={<ImportSafe />} />
                   <Route path="/add-custom-deployment" element={<AddCustomDeployment />} />
-                  <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/aggregate-signatures" element={<AggregateSignaturesAndExecute />} />

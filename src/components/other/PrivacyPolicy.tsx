@@ -8,15 +8,7 @@ const PrivacyPolicy: React.FC = () => {
         Privacy Policy
       </Typography>
       <Typography variant="body1" gutterBottom>
-        <strong>Last Updated: [01-01-2025]</strong>
-      </Typography>
-      <Typography variant="body1" gutterBottom>
-        <strong>1. Introduction</strong>
-        <br />
-        This Privacy Policy ("Policy") delineates the modalities through which [Your Company Name] ("we," "us," or
-        "our") administers, utilizes, and safeguards information pertinent to users ("you" or "your") within the ambit
-        of our wallet user interface ("Service"). By engaging with our Service, you manifest your assent to the
-        stipulations encapsulated herein.
+        <strong>Last Updated: [26-02-2025]</strong>
       </Typography>
       <Typography variant="body1" gutterBottom>
         <strong>2. Data Collection and Usage</strong>
@@ -24,18 +16,18 @@ const PrivacyPolicy: React.FC = () => {
         <em>a. Personal Data</em>
         <br />
         We categorically abstain from the collection, storage, or processing of any personal data that could be employed
-        to identify an individual, either directly or indirectly. Our Service is architected to function devoid of
+        to identify an individual, either directly or indirectly. The tool is architected to function devoid of
         necessitating such information.
         <br />
         <em>b. Non-Personal Data</em>
         <br />
         We do not accumulate non-personal data, including but not limited to anonymized or aggregated data, through your
-        interaction with the Service.
+        interaction with the tool.
       </Typography>
       <Typography variant="body1" gutterBottom>
         <strong>3. Local Storage Utilization</strong>
         <br />
-        Our Service leverages the local storage mechanism inherent to your web browser to preserve data indispensable
+        The code leverages the local storage mechanism inherent to your web browser to preserve data indispensable
         for its operational efficacy. This data is confined to your device and is not transmitted to or accessible by
         us. The utilization of local storage is imperative for functionalities such as:
         <ul>
@@ -44,19 +36,19 @@ const PrivacyPolicy: React.FC = () => {
           <li>Storage of cryptographic keys or identifiers requisite for blockchain interactions.</li>
         </ul>
         You retain the autonomy to manage or expunge local storage data via your browser settings; however, such actions
-        may impede or incapacitate certain functionalities of the Service.
+        may impede or incapacitate certain functionalities of the tool.
       </Typography>
       <Typography variant="body1" gutterBottom>
         <strong>4. Cookies and Tracking Technologies</strong>
         <br />
-        We do not deploy cookies, beacons, pixels, or analogous tracking technologies within our Service. Our commitment
+        We do not deploy cookies, beacons, pixels, or analogous tracking technologies within the tool. Our commitment
         to user privacy ensures that no tracking mechanisms are employed to monitor, collect, or analyze user behavior
         or interactions.
       </Typography>
       <Typography variant="body1" gutterBottom>
         <strong>5. Third-Party Services</strong>
         <br />
-        Our Service may encompass integrations or references to third-party services, decentralized applications
+        The tool may encompass integrations or references to third-party services, decentralized applications
         (dApps), or external links. It is imperative to acknowledge that:
         <ul>
           <li>We do not govern or oversee the data collection practices of these third-party entities.</li>
@@ -71,7 +63,7 @@ const PrivacyPolicy: React.FC = () => {
       <Typography variant="body1" gutterBottom>
         <strong>6. Data Security and User Responsibility</strong>
         <br />
-        While we endeavor to implement robust security protocols to safeguard the Service's infrastructure, the onus of
+        While we endeavor to implement robust security protocols to safeguard the tools's infrastructure, the onus of
         ensuring the security and confidentiality of data stored on your device resides with you. This encompasses:
         <ul>
           <li>Safeguarding access to your device through secure passwords or biometric authentication.</li>
@@ -84,17 +76,17 @@ const PrivacyPolicy: React.FC = () => {
       <Typography variant="body1" gutterBottom>
         <strong>7. Legal Compliance and Jurisdictional Considerations</strong>
         <br />
-        Our Service is engineered to operate in consonance with pertinent data protection regulations and privacy laws.
-        However, given the global accessibility of the Service in the form of code, it is incumbent upon you to ensure
+        The tool is engineered to operate in consonance with pertinent data protection regulations and privacy laws.
+        However, given the global accessibility of the tool in the form of code, it is incumbent upon you to ensure
         that your use complies with local laws and regulations. We disclaim responsibility for any non-compliance
-        arising from your use of the Service in jurisdictions with specific legal requisites.
+        arising from your use of the tool in jurisdictions with specific legal requisites.
       </Typography>
       <Typography variant="body1" gutterBottom>
         <strong>8. Amendments to This Privacy Policy</strong>
         <br />
         We reserve the unmitigated right to modify, amend, or update this Policy at our sole discretion. Such changes
-        shall become effective immediately upon posting the revised Policy within the Service. Continued utilization of
-        the Service post-amendment constitutes your acceptance of the revised terms. We encourage periodic review of
+        shall become effective immediately upon posting the revised Policy within the tool. Continued utilization of
+        the tool post-amendment constitutes your acceptance of the revised terms. We encourage periodic review of
         this Policy to remain apprised of any alterations.
       </Typography>
       <Typography variant="body1" gutterBottom>
@@ -105,7 +97,7 @@ const PrivacyPolicy: React.FC = () => {
       </Typography>
       <Typography variant="body1">
         <em>
-          By accessing and utilizing this Service, you acknowledge that you have read, comprehended, and consented to
+          By accessing and utilizing this tool, you acknowledge that you have read, comprehended, and consented to
           the terms delineated in this Privacy Policy.
         </em>
       </Typography>
