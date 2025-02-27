@@ -23,7 +23,7 @@ import {
 import Grid from "@mui/material/Grid2";
 import { readContract, signTypedData, simulateContract, writeContract } from "@wagmi/core";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   type Address,
   BaseError,
@@ -69,6 +69,7 @@ export type ImportData = {
   transactions: Transaction[];
   safeAccount: Address;
   safeTransaction: SafeTransactionParams;
+  safeTransactionHash: `0x${string}`;
 };
 
 export type ImportSignedData = ImportData & {
@@ -89,17 +90,19 @@ const CreateTransaction: React.FC = () => {
   const [expanded, setExpanded] = useState<string | false>(false);
   const [importHex, setImportHex] = useState<`0x${string}`>("0x");
   const [viewDialogOpen, setViewDialogOpen] = useState<boolean>(false);
+  const [copyUnsignedTxButtonEnabled, isCopyUnsignedTxButtonEnabled] = useState<boolean>(true);
 
   const handleAddTransaction = async (newTransaction: Transaction) => {
     setTransactions([...transactions, { ...newTransaction }]);
   };
 
-  const getExportHex = (): string => {
-    if (safeTransaction && safeAccount) {
+  const getExportHex = (txs: Transaction[], safeTx: SafeTransactionParams, safeTxHash: `0x${string}`): string => {
+    if (safeAccount) {
       const exportData: ImportData = {
-        transactions: transactions,
+        transactions: txs,
         safeAccount: safeAccount,
-        safeTransaction: safeTransaction,
+        safeTransaction: safeTx,
+        safeTransactionHash: safeTxHash,
       };
 
       const exportDataString = JSON.stringify(exportData, (_key, value) =>
@@ -111,12 +114,13 @@ const CreateTransaction: React.FC = () => {
   };
 
   const getExportHexSigned = (): string => {
-    if (safeAccount && safeTransaction && account.address && signature) {
+    if (safeAccount && safeTransaction && account.address && signature && safeTransactionHash) {
       const exportData: ImportSignedData = {
         transactions: transactions,
         safeAccount: safeAccount,
         signature: { signer: account.address, data: signature },
         safeTransaction: safeTransaction,
+        safeTransactionHash: safeTransactionHash,
       };
 
       const exportDataString = JSON.stringify(exportData, (_key, value) =>
@@ -151,16 +155,36 @@ const CreateTransaction: React.FC = () => {
     setViewDialogOpen(true);
   };
 
-  const handleCopyToClipboard = () => {
-    if (safeTransaction) {
-      const hexString = getExportHex();
+  const handleCopyToClipboard = async () => {
+    isCopyUnsignedTxButtonEnabled(false);
+    const result = await getSafeTransactionInfo();
+    const safeTx = result.safeTx;
+
+    setSafeTransactionHash(result.safeTxHash);
+
+    setSafeTransaction({
+      to: safeTx.to,
+      value: safeTx.value,
+      data: safeTx.data,
+      operation: safeTx.operation,
+      safeTxGas: safeTx.safeTxGas,
+      baseGas: safeTx.baseGas,
+      gasPrice: safeTx.gasPrice,
+      gasToken: safeTx.gasToken,
+      refundReceiver: safeTx.refundReceiver,
+      nonce: safeTx.nonce,
+    });
+
+    if (safeTx) {
+      const hexString = getExportHex(transactions, safeTx, result.safeTxHash);
       navigator.clipboard.writeText(hexString);
     } else {
       console.error("safeTransaction undefined");
     }
+    isCopyUnsignedTxButtonEnabled(true);
   };
 
-  const handleCopyToClipboardSigned = () => {
+  const handleCopyToClipboardSigned = async () => {
     if (safeTransaction) {
       const hexString = getExportHexSigned();
       navigator.clipboard.writeText(hexString);
@@ -521,7 +545,7 @@ const CreateTransaction: React.FC = () => {
             <Tooltip title="Share transaction data with other signers">
               <span>
                 <Button
-                  disabled={transactions.length === 0}
+                  disabled={transactions.length === 0 || !copyUnsignedTxButtonEnabled}
                   variant="contained"
                   onClick={handleCopyToClipboard}
                   startIcon={<FileUploadIcon />}
@@ -550,7 +574,13 @@ const CreateTransaction: React.FC = () => {
           </Grid>
 
           <Grid size={12}>
-            <Button variant="contained" onClick={handleViewSafeTransaction} fullWidth startIcon={<VisibilityIcon />}>
+            <Button
+              disabled={transactions.length === 0}
+              variant="contained"
+              onClick={handleViewSafeTransaction}
+              fullWidth
+              startIcon={<VisibilityIcon />}
+            >
               View Safe Transaction
             </Button>
           </Grid>
