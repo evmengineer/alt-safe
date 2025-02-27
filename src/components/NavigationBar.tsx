@@ -57,7 +57,6 @@ const NavigationBar: React.FC = () => {
   const handleChainChange = (_: React.SyntheticEvent, value: any) => {
     if (value) {
       switchChain({ chainId: value.id });
-      handleChainDialogClose();
     }
   };
 
