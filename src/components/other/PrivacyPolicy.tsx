@@ -27,9 +27,9 @@ const PrivacyPolicy: React.FC = () => {
       <Typography variant="body1" gutterBottom>
         <strong>3. Local Storage Utilization</strong>
         <br />
-        The code leverages the local storage mechanism inherent to your web browser to preserve data indispensable
-        for its operational efficacy. This data is confined to your device and is not transmitted to or accessible by
-        us. The utilization of local storage is imperative for functionalities such as:
+        The code leverages the local storage mechanism inherent to your web browser to preserve data indispensable for
+        its operational efficacy. This data is confined to your device and is not transmitted to or accessible by us.
+        The utilization of local storage is imperative for functionalities such as:
         <ul>
           <li>Retention of user preferences and settings.</li>
           <li>Maintenance of session states to facilitate seamless user experience.</li>
@@ -41,15 +41,15 @@ const PrivacyPolicy: React.FC = () => {
       <Typography variant="body1" gutterBottom>
         <strong>4. Cookies and Tracking Technologies</strong>
         <br />
-        We do not deploy cookies, beacons, pixels, or analogous tracking technologies within the tool. Our commitment
-        to user privacy ensures that no tracking mechanisms are employed to monitor, collect, or analyze user behavior
-        or interactions.
+        We do not deploy cookies, beacons, pixels, or analogous tracking technologies within the tool. Our commitment to
+        user privacy ensures that no tracking mechanisms are employed to monitor, collect, or analyze user behavior or
+        interactions.
       </Typography>
       <Typography variant="body1" gutterBottom>
         <strong>5. Third-Party Services</strong>
         <br />
-        The tool may encompass integrations or references to third-party services, decentralized applications
-        (dApps), or external links. It is imperative to acknowledge that:
+        The tool may encompass integrations or references to third-party services, decentralized applications (dApps),
+        or external links. It is imperative to acknowledge that:
         <ul>
           <li>We do not govern or oversee the data collection practices of these third-party entities.</li>
           <li>
@@ -77,17 +77,17 @@ const PrivacyPolicy: React.FC = () => {
         <strong>7. Legal Compliance and Jurisdictional Considerations</strong>
         <br />
         The tool is engineered to operate in consonance with pertinent data protection regulations and privacy laws.
-        However, given the global accessibility of the tool in the form of code, it is incumbent upon you to ensure
-        that your use complies with local laws and regulations. We disclaim responsibility for any non-compliance
-        arising from your use of the tool in jurisdictions with specific legal requisites.
+        However, given the global accessibility of the tool in the form of code, it is incumbent upon you to ensure that
+        your use complies with local laws and regulations. We disclaim responsibility for any non-compliance arising
+        from your use of the tool in jurisdictions with specific legal requisites.
       </Typography>
       <Typography variant="body1" gutterBottom>
         <strong>8. Amendments to This Privacy Policy</strong>
         <br />
         We reserve the unmitigated right to modify, amend, or update this Policy at our sole discretion. Such changes
-        shall become effective immediately upon posting the revised Policy within the tool. Continued utilization of
-        the tool post-amendment constitutes your acceptance of the revised terms. We encourage periodic review of
-        this Policy to remain apprised of any alterations.
+        shall become effective immediately upon posting the revised Policy within the tool. Continued utilization of the
+        tool post-amendment constitutes your acceptance of the revised terms. We encourage periodic review of this
+        Policy to remain apprised of any alterations.
       </Typography>
       <Typography variant="body1" gutterBottom>
         <strong>9. Contact Information</strong>
@@ -97,8 +97,8 @@ const PrivacyPolicy: React.FC = () => {
       </Typography>
       <Typography variant="body1">
         <em>
-          By accessing and utilizing this tool, you acknowledge that you have read, comprehended, and consented to
-          the terms delineated in this Privacy Policy.
+          By accessing and utilizing this tool, you acknowledge that you have read, comprehended, and consented to the
+          terms delineated in this Privacy Policy.
         </em>
       </Typography>
     </Container>

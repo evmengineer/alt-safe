@@ -18,8 +18,8 @@ const About: React.FC = () => {
         <strong>Our Mission</strong>
         <br />
         Our mission is simple yet ambitious: to empower blockchain users by providing a seamless and decentralized way
-        to interact with Safe Smart Account contracts. This project is designed to work without relying on any additional
-        backend services, ensuring that users retain full control over their data and transactions.
+        to interact with Safe Smart Account contracts. This project is designed to work without relying on any
+        additional backend services, ensuring that users retain full control over their data and transactions.
       </Typography>
       <Typography variant="body1" gutterBottom>
         <strong>Why We Built This</strong>

@@ -7,10 +7,11 @@ import {
   keccak256,
   zeroAddress,
 } from "viem";
-import safeAddresses, {
+import {
   type SafeDeployment,
   SafeDeploymentType,
   SafeVersion,
+  canonicalAddresses_141,
 } from "../safe-contracts/addresses/addresses";
 import safe from "../safe-contracts/artifacts/Safe.json";
 import safeProxy from "../safe-contracts/artifacts/SafeProxy.json";
@@ -81,11 +82,11 @@ export const getShortTransactionHash = (address: Address): string => {
 };
 
 export const getSafeAddresses = (
-  chainId: number,
+  _chainId: number,
   version: SafeVersion = SafeVersion.V1_4_1,
-  deploymentType: SafeDeploymentType = SafeDeploymentType.CANONICAL,
-): SafeDeployment => {
-  return safeAddresses[chainId][version][deploymentType];
+  _deploymentType: SafeDeploymentType = SafeDeploymentType.CANONICAL,
+): SafeDeployment | undefined => {
+  if (version === SafeVersion.V1_4_1) return canonicalAddresses_141;
 };
 
 export enum SafeOperation {

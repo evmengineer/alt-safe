@@ -33,28 +33,3 @@ export const canonicalAddresses_141: SafeDeployment = {
   multiSend: import.meta.env.VITE_MULTI_SEND_ADDRESS as Address,
   multiSendCallOnly: import.meta.env.VITE_MULTI_SEND_CALL_ONLY_ADDRESS as Address,
 };
-
-const SafeDeployments: SafeAddresses = {
-  "911867": {
-    "1.4.1": {
-      canonical: canonicalAddresses_141,
-    },
-  },
-  "31337": {
-    "1.4.1": {
-      canonical: canonicalAddresses_141,
-    },
-  },
-  "1": {
-    "1.4.1": {
-      canonical: canonicalAddresses_141,
-    },
-  },
-  "11155111": {
-    "1.4.1": {
-      canonical: canonicalAddresses_141,
-    },
-  },
-};
-
-export default SafeDeployments;
