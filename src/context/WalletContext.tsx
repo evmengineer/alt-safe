@@ -11,8 +11,8 @@ export type SafeTransactionInfo = {
   safeAccount: Address;
   chainId: number | undefined;
   safeTransactionParams: SafeTransactionParams;
-  transactionHash: `0x${string}`;
-  status: string;
+  transactionHash: `0x${string}` | undefined;
+  status: string | undefined;
   blockNumber: bigint | undefined;
   blockHash: `0x${string}` | undefined;
 };

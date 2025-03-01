@@ -21,7 +21,7 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { readContract, signTypedData, simulateContract, writeContract } from "@wagmi/core";
+import { readContract, signTypedData, simulateContract } from "@wagmi/core";
 import type React from "react";
 import { useState } from "react";
 import {
@@ -34,6 +34,7 @@ import {
   zeroAddress,
 } from "viem";
 import { encodeFunctionData } from "viem";
+import { useWriteContract } from "wagmi";
 import { useAccount, usePublicClient } from "wagmi";
 import { STORAGE_KEY } from "../../constants";
 import { type SafeTransactionInfo, useSafeWalletContext } from "../../context/WalletContext";
@@ -44,6 +45,8 @@ import { EIP712_SAFE_TX_TYPE, SafeOperation, type SafeSignature, type SafeTransa
 import { config } from "../../wagmi";
 import AccountAddress from "../common/AccountAddress";
 import ViewSafeTransactionDialog from "../common/ViewSafeTransactionDialog";
+import WaitForTransactionDialog from "../dialogs/WaitForTransactionDialog";
+
 import Summary from "./Summary";
 import InputTransactionData from "./inputTransactionData/InputTransactionData";
 
@@ -79,6 +82,7 @@ export type ImportSignedData = ImportData & {
 const CreateTransaction: React.FC = () => {
   const publicClient = usePublicClient();
   const account = useAccount();
+  const { writeContractAsync } = useWriteContract();
 
   const { safeAccount, safeDeployment, safeStorage, storage } = useSafeWalletContext();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -91,6 +95,7 @@ const CreateTransaction: React.FC = () => {
   const [importHex, setImportHex] = useState<`0x${string}`>("0x");
   const [viewDialogOpen, setViewDialogOpen] = useState<boolean>(false);
   const [copyUnsignedTxButtonEnabled, isCopyUnsignedTxButtonEnabled] = useState<boolean>(true);
+  const [waitForTransactionDialogOpen, setWaitForTransactionDialogOpen] = useState<boolean>(false);
 
   const handleAddTransaction = async (newTransaction: Transaction) => {
     setTransactions([...transactions, { ...newTransaction }]);
@@ -332,8 +337,9 @@ const CreateTransaction: React.FC = () => {
           ],
         });
 
-        const hash = await writeContract(config, request);
+        const hash = await writeContractAsync(request);
         setTransactionHash(hash);
+        setWaitForTransactionDialogOpen(true);
         await updateStorage(hash);
       } catch (err) {
         console.error(err);
@@ -384,6 +390,10 @@ const CreateTransaction: React.FC = () => {
   const handleAccordionChange = (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+  function handleCloseWaitingDialog(): void {
+    setWaitForTransactionDialogOpen(false);
+  }
 
   return (
     <Box>
@@ -593,6 +603,13 @@ const CreateTransaction: React.FC = () => {
         safeTransaction={safeTransaction}
         safeTransactionHash={safeTransactionHash || "0x"}
       />
+      {transactionHash && (
+        <WaitForTransactionDialog
+          open={waitForTransactionDialogOpen}
+          hash={transactionHash}
+          onClose={handleCloseWaitingDialog}
+        />
+      )}
     </Box>
   );
 };
