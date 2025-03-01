@@ -23,7 +23,7 @@ import {
 import Grid from "@mui/material/Grid2";
 import { readContract, signTypedData, simulateContract, writeContract } from "@wagmi/core";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   type Address,
   BaseError,
