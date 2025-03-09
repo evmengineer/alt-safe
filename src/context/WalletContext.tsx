@@ -4,8 +4,10 @@ import { type Address, isAddress, isAddressEqual, zeroAddress } from "viem"; // 
 import { createStorage, useAccount, usePublicClient } from "wagmi";
 import { type FEATURES, STORAGE_KEY, WALLET_STORAGE_KEY } from "../constants";
 import { type SafeDeployment, SafeDeploymentType, SafeVersion } from "../safe-contracts/addresses/addresses";
+import transctionTypesSpec from "../templates/TransactionInputBuilderSpec.json";
 import { type SafeStorage, fetchStorageData } from "../utils/storageReader";
 import { type SafeTransactionParams, getSafeAddresses } from "../utils/utils";
+import type { TransactionGroupSpec } from "./types";
 
 export type SafeTransactionInfo = {
   safeAccount: Address;
@@ -31,6 +33,7 @@ interface WalletContextType {
   tokenList: TokenList[];
   setTokenList: (list: TokenList[]) => void;
   storage: any;
+  txBuilderSpec: TransactionGroupSpec[];
 }
 
 export type SafeAccount = {
@@ -65,6 +68,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const storage = createStorage({ key: WALLET_STORAGE_KEY, storage: localStorage });
   const [safeDeployment, setSafeDeployment] = useState<SafeDeployment>();
   const [tokenList, setTokenList] = useState<TokenList[]>([]);
+  const [txBuilderSpec, _setTxBuilderSpec] = useState<TransactionGroupSpec[]>(transctionTypesSpec.transactionTypesSpec);
 
   const setCustomRPC = (rpc: string | undefined) => {
     setRpc(rpc);
@@ -151,6 +155,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         tokenList,
         setTokenList: saveTokenList,
         storage,
+        txBuilderSpec,
       }}
     >
       {children}

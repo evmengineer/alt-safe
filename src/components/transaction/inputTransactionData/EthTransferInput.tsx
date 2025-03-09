@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { type Address, formatUnits, parseUnits, zeroAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 import { useSafeWalletContext } from "../../../context/WalletContext";
+import { type Transaction, TransactionType } from "../../../context/types";
 import MonospacedTextField from "../../common/MonospacedTextField";
-import { type Transaction, TransactionType } from "../CreateTransaction";
 
 interface EthTransferInputProps {
   onAdd: (newTransaction: Transaction) => void;

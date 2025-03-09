@@ -2,8 +2,8 @@ import { Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useState } from "react";
 import { type Address, zeroAddress } from "viem";
+import { type Transaction, TransactionType } from "../../../context/types";
 import MonospacedTextField from "../../common/MonospacedTextField";
-import { type Transaction, TransactionType } from "../CreateTransaction";
 
 interface ContractCallInputProps {
   onAdd: (newTransaction: Transaction) => void;

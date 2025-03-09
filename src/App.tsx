@@ -25,7 +25,7 @@ function App() {
           <Router>
             <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
               <NavigationBar />
-              <Container maxWidth="md">
+              <Container>
                 <Routes>
                   <Route path="/" element={<Welcome />} />
                   <Route path="/welcome" element={<Welcome />} />

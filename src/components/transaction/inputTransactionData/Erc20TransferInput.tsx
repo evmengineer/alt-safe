@@ -6,10 +6,10 @@ import { type Address, formatUnits, zeroAddress } from "viem";
 import { encodeFunctionData } from "viem";
 import ERC20ABI from "../../../abis/ERC20.json";
 import { useSafeWalletContext } from "../../../context/WalletContext";
+import { type Transaction, TransactionType } from "../../../context/types";
 import { getShortAddress } from "../../../utils/utils";
 import { config } from "../../../wagmi";
 import MonospacedTextField from "../../common/MonospacedTextField";
-import { type Transaction, TransactionType } from "../CreateTransaction";
 
 interface Erc20TransferInputProps {
   onAdd: (newTransaction: Transaction) => void;

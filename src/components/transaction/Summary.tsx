@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, Divider } from "@mui/material";
 import type React from "react";
-import type { Transaction } from "./CreateTransaction";
-import TransactionCard from "./TransactionCard";
+import type { Transaction } from "../../context/types";
+import TransactionCard from "./transactionBuilder/TransactionCard";
 
 interface SummaryProps {
   transactions: Transaction[];

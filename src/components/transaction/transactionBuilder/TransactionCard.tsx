@@ -2,8 +2,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { Box, IconButton, List, ListItem, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import type React from "react";
-import AccountAddress from "../common/AccountAddress";
-import { type Transaction, TransactionType } from "./types";
+import { type Transaction, TransactionType } from "../../../context/types";
+import AccountAddress from "../../common/AccountAddress";
 
 interface TransactionCardProps {
   transaction: Transaction & { id: number };

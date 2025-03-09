@@ -1,25 +1,7 @@
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import CodeIcon from "@mui/icons-material/Code";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import DownloadIcon from "@mui/icons-material/Download";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Button, Card, CardContent, CardHeader, Tooltip } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { readContract, signTypedData, simulateContract } from "@wagmi/core";
 import type React from "react";
@@ -38,46 +20,17 @@ import { useWriteContract } from "wagmi";
 import { useAccount, usePublicClient } from "wagmi";
 import { STORAGE_KEY } from "../../constants";
 import { type SafeTransactionInfo, useSafeWalletContext } from "../../context/WalletContext";
+import type { ImportData, ImportSignedData, Transaction } from "../../context/types";
 import multisendCallOnly from "../../safe-contracts/artifacts/MultiSendCallOnly.json";
 import safe from "../../safe-contracts/artifacts/Safe.json";
 import { encodeMultiSend } from "../../utils/multisend";
-import { EIP712_SAFE_TX_TYPE, SafeOperation, type SafeSignature, type SafeTransactionParams } from "../../utils/utils";
+import { EIP712_SAFE_TX_TYPE, SafeOperation, type SafeTransactionParams } from "../../utils/utils";
 import { config } from "../../wagmi";
 import AccountAddress from "../common/AccountAddress";
 import ViewSafeTransactionDialog from "../common/ViewSafeTransactionDialog";
 import WaitForTransactionDialog from "../dialogs/WaitForTransactionDialog";
-
 import Summary from "./Summary";
-import InputTransactionData from "./inputTransactionData/InputTransactionData";
-
-export interface Transaction {
-  type: TransactionType;
-  to: Address;
-  value: string;
-  data: `0x${string}`;
-  erc20TokenTransfer?: {
-    tokenAddress: Address;
-    to: Address;
-    amount: string;
-  };
-}
-
-export enum TransactionType {
-  ETH_TRANSFER = "ethTransfer",
-  ERC20_TRANSFER = "erc20Transfer",
-  CONTRACT_CALL = "contractCall",
-}
-
-export type ImportData = {
-  transactions: Transaction[];
-  safeAccount: Address;
-  safeTransaction: SafeTransactionParams;
-  safeTransactionHash: `0x${string}`;
-};
-
-export type ImportSignedData = ImportData & {
-  signature: SafeSignature;
-};
+import TransactionBuilder from "./transactionBuilder/TransactionBuilder";
 
 const CreateTransaction: React.FC = () => {
   const publicClient = usePublicClient();
@@ -91,11 +44,12 @@ const CreateTransaction: React.FC = () => {
   const [signature, setSignature] = useState<`0x${string}`>();
   const [safeTransactionHash, setSafeTransactionHash] = useState<`0x${string}`>();
   const [error, setError] = useState<string>();
-  const [expanded, setExpanded] = useState<string | false>(false);
   const [importHex, setImportHex] = useState<`0x${string}`>("0x");
   const [viewDialogOpen, setViewDialogOpen] = useState<boolean>(false);
   const [copyUnsignedTxButtonEnabled, isCopyUnsignedTxButtonEnabled] = useState<boolean>(true);
   const [waitForTransactionDialogOpen, setWaitForTransactionDialogOpen] = useState<boolean>(false);
+  const [selectedTransactionType, setSelectedTransactionType] = useState<string>("Send");
+  const [group, setGroup] = useState<string>("Token");
 
   const handleAddTransaction = async (newTransaction: Transaction) => {
     setTransactions([...transactions, { ...newTransaction }]);
@@ -387,19 +341,20 @@ const CreateTransaction: React.FC = () => {
     }
   };
 
-  const handleAccordionChange = (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
   function handleCloseWaitingDialog(): void {
     setWaitForTransactionDialogOpen(false);
   }
 
+  const handleSelectTransactionType = (group: string, type: string) => {
+    setSelectedTransactionType(type);
+    setGroup(group);
+  };
+
   return (
-    <Box>
+    <Box id="box-create-transaction">
       <Grid container spacing={2} sx={{ margin: 1 }}>
-        <Grid size={{ xs: 12, md: 8, sm: 12 }}>
-          <Card sx={{ backgroundColor: "transparent", minHeight: "75vh", maxHeight: "75vh", overflowY: "scroll" }}>
+        <Grid id="grid-build-transaction" size={{ xs: 12, md: 9, sm: 12 }}>
+          <Card id="card-tx-builder" sx={{ height: "75vh" }}>
             <CardHeader
               title="Build transaction"
               subheader={
@@ -412,97 +367,20 @@ const CreateTransaction: React.FC = () => {
               }
             />
             <CardContent>
-              <Grid container spacing={2} id="transaction-type">
-                <Grid size={12}>
-                  <Accordion
-                    expanded={expanded === TransactionType.ETH_TRANSFER}
-                    onChange={handleAccordionChange(TransactionType.ETH_TRANSFER)}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="eth-transfer-content"
-                      id="eth-transfer-header"
-                    >
-                      <AccountBalanceWalletIcon style={{ marginRight: 8 }} />
-                      <Typography variant="h6">ETH Transfer</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <InputTransactionData
-                        transactionType={TransactionType.ETH_TRANSFER}
-                        onAdd={handleAddTransaction}
-                      />
-                    </AccordionDetails>
-                  </Accordion>
-                  <Accordion
-                    expanded={expanded === TransactionType.ERC20_TRANSFER}
-                    onChange={handleAccordionChange(TransactionType.ERC20_TRANSFER)}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="erc20-transfer-content"
-                      id="erc20-transfer-header"
-                    >
-                      <AttachMoneyIcon style={{ marginRight: 8 }} />
-                      <Typography variant="h6">ERC20 Transfer</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <InputTransactionData
-                        transactionType={TransactionType.ERC20_TRANSFER}
-                        onAdd={handleAddTransaction}
-                      />
-                    </AccordionDetails>
-                  </Accordion>
-                  <Accordion
-                    expanded={expanded === TransactionType.CONTRACT_CALL}
-                    onChange={handleAccordionChange(TransactionType.CONTRACT_CALL)}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="contract-call-content"
-                      id="contract-call-header"
-                    >
-                      <CodeIcon style={{ marginRight: 8 }} />
-                      <Typography variant="h6">Smart Contract Call</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <InputTransactionData
-                        transactionType={TransactionType.CONTRACT_CALL}
-                        onAdd={handleAddTransaction}
-                      />
-                    </AccordionDetails>
-                  </Accordion>
-                  <Accordion
-                    expanded={expanded === "importTransactions"}
-                    onChange={handleAccordionChange("importTransactions")}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="import-transactions-content"
-                      id="import-transactions-header"
-                    >
-                      <DownloadIcon style={{ marginRight: 8 }} />
-                      <Typography variant="h6">Import Transactions</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <TextField
-                        label="Hex Encoded JSON"
-                        value={importHex}
-                        onChange={(e) => setImportHex(e.target.value as `0x${string}`)}
-                        fullWidth
-                        margin="normal"
-                      />
-                      <Button variant="contained" color="primary" onClick={handleImportTransactions}>
-                        Import
-                      </Button>
-                    </AccordionDetails>
-                  </Accordion>
-                </Grid>
-              </Grid>
+              <TransactionBuilder
+                group={group}
+                selectedTransactionType={selectedTransactionType}
+                importHex={importHex}
+                setImportHex={setImportHex}
+                handleSelectTransactionType={handleSelectTransactionType}
+                handleAddTransaction={handleAddTransaction}
+                handleImportTransactions={handleImportTransactions}
+              />
             </CardContent>
           </Card>
         </Grid>
 
-        <Grid size={{ xs: 12, md: 4, sm: 12 }}>
+        <Grid id="grid-summary" size={{ xs: 12, md: 3, sm: 12 }}>
           <Summary viewOnly={false} transactions={transactions} handleDeleteTransaction={handleDeleteTransaction} />
         </Grid>
 
@@ -551,7 +429,7 @@ const CreateTransaction: React.FC = () => {
             </Button>
           </Grid>
 
-          <Grid size={6}>
+          <Grid size={4}>
             <Tooltip title="Share transaction data with other signers">
               <span>
                 <Button
@@ -567,7 +445,7 @@ const CreateTransaction: React.FC = () => {
             </Tooltip>
           </Grid>
 
-          <Grid size={6}>
+          <Grid size={4}>
             <Tooltip title="Copy signed transaction for aggregation. This can be used when there are more than 1 signers for Safe account.">
               <span>
                 <Button
@@ -583,7 +461,7 @@ const CreateTransaction: React.FC = () => {
             </Tooltip>
           </Grid>
 
-          <Grid size={12}>
+          <Grid size={4}>
             <Button
               disabled={transactions.length === 0}
               variant="contained"

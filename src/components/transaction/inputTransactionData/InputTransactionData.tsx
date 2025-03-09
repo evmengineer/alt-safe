@@ -1,5 +1,5 @@
 import type React from "react";
-import type { Transaction, TransactionType } from "../CreateTransaction";
+import type { Transaction, TransactionType } from "../../../context/types";
 import ContractCallInput from "./ContractCallInput";
 import Erc20TransferInput from "./Erc20TransferInput";
 import EthTransferInput from "./EthTransferInput";
