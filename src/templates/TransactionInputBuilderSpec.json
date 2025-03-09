@@ -22,7 +22,7 @@
             },
             "value": {
               "type": "uint256",
-              "defaultValue": ""
+              "defaultValue": "0"
             }
           },
           "inputs": [
@@ -141,7 +141,7 @@
             },
             "value": {
               "type": "uint256",
-              "defaultValue": ""
+              "defaultValue": "0"
             }
           },
           "inputs": [
@@ -260,7 +260,7 @@
             },
             "value": {
               "type": "uint256",
-              "defaultValue": ""
+              "defaultValue": "0"
             }
           },
           "inputs": [
