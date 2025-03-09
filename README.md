@@ -5,6 +5,7 @@ ALT Wallet is an alternative UI for interacting with Safe Smart Contracts. ALT W
 ## Features
 
 - Create new Safe Smart Account
+- Add support for smart contract calls using **template specificaiton**.
 - Import existing Safe Smart Account
 - UI Components to
     -   Transfer native tokens
@@ -15,6 +16,19 @@ ALT Wallet is an alternative UI for interacting with Safe Smart Contracts. ALT W
 - Aggregate signatures from multiple signers
 - View Safe storage slots like Owners, Modules, Nonce, Singleton, etc.
 - Option to set custom Safe Proxy Factory, Fallback Handler, etc addresses.
+
+### Unique Feature
+
+A unique feature of this project is its support for smart contract integrations using specifications. This specification is a JSON file that contains:
+
+The function to call on the smart contract.
+User inputs required to build the function call.
+Context values, which can be used to compute dynamic values.
+Validations to ensure user inputs are correct and provide meaningful error messages to users.
+This allows developers and users to seamlessly interact with different smart contracts in a structured and reliable manner.
+
+- [Template specification](./docs/template-specification.md)
+- [Default template](./src/templates/TransactionInputBuilderSpec.json)
 
 This is a [Vite](https://vitejs.dev) project bootstrapped with [`create-wagmi`](https://github.com/wevm/wagmi/tree/main/packages/create-wagmi).
 
