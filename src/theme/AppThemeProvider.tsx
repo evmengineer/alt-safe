@@ -7,7 +7,7 @@ const safeliteTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: amber[400],
+      main: amber[300],
     },
     secondary: {
       main: grey[500],
@@ -28,6 +28,13 @@ const safeliteTheme = createTheme({
     MuiButtonBase: {
       defaultProps: {
         disableRipple: true,
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          fontWeight: "bold",
+        },
       },
     },
   },

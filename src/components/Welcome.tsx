@@ -24,7 +24,7 @@ const Welcome: React.FC = () => {
       }}
     >
       <Container maxWidth="md">
-        <Typography variant="h1" fontWeight="bold" color="primary">
+        <Typography variant="h2" fontWeight="bold" color="primary">
           &lt;ALT&gt; Safe
         </Typography>
         <Typography variant="h6" gutterBottom>
