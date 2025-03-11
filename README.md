@@ -1,6 +1,6 @@
-# ALT Wallet
+# ALT Safe
 
-ALT Wallet is an alternative UI for interacting with Safe Smart Contracts. ALT Wallet works without any backend.
+ALT Safe is an alternative UI for interacting with Safe Smart Contracts. ALT Safe works without any backend.
 
 ## Features
 
@@ -34,7 +34,7 @@ This is a [Vite](https://vitejs.dev) project bootstrapped with [`create-wagmi`](
 
 ## RPC
 
-ALT Wallet relies on the user provided RPC URL or the default RPC URL provided by `wagmi`. It is very important to provide a stable and performant RPC node. Typically, public RPC URLs are not sufficient, and it is recommended to run against a private RPC URL or your own node directly.
+ALT Safe relies on the user provided RPC URL or the default RPC URL provided by `wagmi`. It is very important to provide a stable and performant RPC node. Typically, public RPC URLs are not sufficient, and it is recommended to run against a private RPC URL or your own node directly.
 
 ## Differences from Safe{Wallet}
 
