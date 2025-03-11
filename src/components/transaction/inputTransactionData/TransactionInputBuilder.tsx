@@ -3,37 +3,12 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Grid from "@mui/material/Grid2";
 import { readContract } from "@wagmi/core";
 import { Parser } from "expr-eval";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import { type AbiFunction, encodeFunctionData, parseAbi, parseAbiItem } from "viem";
 import { useAccount } from "wagmi";
 import { useSafeWalletContext } from "../../../context/WalletContext";
 import { type Transaction, type TransactionSpec, type TransactionType, ValidationType } from "../../../context/types";
 import { config } from "../../../wagmi";
-
-// Define types
-interface State {
-  inputs: Record<string, string>;
-  context: Record<string, any>;
-  errors: Record<string, { id: string; errorMessage: string }[]>;
-}
-
-type Action =
-  | { type: "UPDATE_INPUT"; payload: { name: string; value: string } }
-  | { type: "UPDATE_CONTEXT"; payload: { name: string; value: any } }
-  | { type: "SET_ERRORS"; payload: { name: string; errors: { id: string; errorMessage: string }[] } };
-
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case "UPDATE_INPUT":
-      return { ...state, inputs: { ...state.inputs, [action.payload.name]: action.payload.value } };
-    case "UPDATE_CONTEXT":
-      return { ...state, context: { ...state.context, [action.payload.name]: action.payload.value } };
-    case "SET_ERRORS":
-      return { ...state, errors: { ...state.errors, [action.payload.name]: action.payload.errors } };
-    default:
-      return state;
-  }
-};
 
 interface TransactionInputBuilderProps {
   onAdd: (transaction: Transaction) => void;
@@ -47,16 +22,16 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
   const parser = new Parser();
 
   // Initialize state dynamically
-  const initialState: State = {
-    context: {
-      safeAddress: safeAccount,
-      ...Object.fromEntries(Object.entries(spec.context).map(([key, item]) => [key, item.defaultValue])),
-    },
-    inputs: Object.fromEntries(spec.inputs.map((input) => [input.name, ""])),
-    errors: {},
+  const initialContext = {
+    safeAddress: safeAccount,
+    ...Object.fromEntries(Object.entries(spec.context).map(([key, item]) => [key, item.defaultValue])),
   };
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const initialInputs = Object.fromEntries(spec.inputs.map((input) => [input.name, ""]));
+
+  const [context, setContext] = useState<Record<string, any>>(initialContext);
+  const [inputs, setInputs] = useState<Record<string, string>>(initialInputs);
+  const [errors, setErrors] = useState<Record<string, { id: string; errorMessage: string }[]>>({});
   const [touchedInputs, setTouchedInputs] = useState<Record<string, boolean>>(
     Object.fromEntries(spec.inputs.map((input) => [input.name, false])),
   );
@@ -73,9 +48,9 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
 
   // Fetch context values from blockchain
   /**
-   *  biome-ignore lint/correctness/useExhaustiveDependencies(state.errors): No need to re-run effect when errors changes.
+   *  biome-ignore lint/correctness/useExhaustiveDependencies(errors): No need to re-run effect when errors changes.
    *  biome-ignore lint/correctness/useExhaustiveDependencies(spec.onInputUpdate): No need to re-run effect as spec is not expectec to change.
-   *  biome-ignore lint/correctness/useExhaustiveDependencies(state.context): Adding state.context to dependencies will cause infinite re-render.
+   *  biome-ignore lint/correctness/useExhaustiveDependencies(context): Adding context to dependencies will cause infinite re-render.
    *  biome-ignore lint/correctness/useExhaustiveDependencies(parser.parse):
    */
   useEffect(() => {
@@ -88,32 +63,36 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
             const ctx = value.data;
             const abi = parseAbi([ctx.method]) as AbiFunction[];
 
-            const args = ctx.args.map((arg: string) =>
-              parser.parse(arg).evaluate({ context: state.context, inputs: state.inputs }),
-            );
-            const to = parser.parse(ctx.to).evaluate({ context: state.context, inputs: state.inputs });
+            const args = ctx.args.map((arg: string) => parser.parse(arg).evaluate({ context, inputs }));
+            const to = parser.parse(ctx.to).evaluate({ context, inputs });
 
             const result = (
               (await readContract(config, { address: to, abi, functionName: abi[0].name, args })) as any
             ).toString();
 
             console.log("Fetched data for", variable, result);
-            dispatch({ type: "UPDATE_CONTEXT", payload: { name: variable.split(".")[1], value: result } });
+            setContext((prevContext) => ({ ...prevContext, [variable.split(".")[1]]: result }));
 
             // Remove error with id value.id if it exists in errors
-            const errors = state.errors;
-            const currentErrors = errors[variable.split(".")[1]] || [];
-            const updatedErrors = currentErrors.filter((err) => err.id !== value.id);
-            dispatch({ type: "SET_ERRORS", payload: { name: variable.split(".")[1], errors: updatedErrors } });
+            setErrors((prevErrors) => {
+              const currentErrors = prevErrors[variable.split(".")[1]] || [];
+              const updatedErrors = currentErrors.filter((err) => err.id !== value.id);
+              return { ...prevErrors, [variable.split(".")[1]]: updatedErrors };
+            });
           } catch (error) {
-            console.error(`Failed to fetch data for ${variable}:`, error);
+            console.warn(`Failed to fetch data for ${variable}`);
             // update error state
-            dispatch({
-              type: "SET_ERRORS",
-              payload: {
-                name: variable.split(".")[1],
-                errors: [{ id: value.id, errorMessage: `Failed to fetch data for [${variable}]` }],
-              },
+            setErrors((prevErrors) => {
+              const errorMessage = value.data.errorMessage || `Failed to fetch data for [${variable}]`;
+              const errorKey = variable.split(".")[1];
+              const currentErrors = prevErrors[errorKey] || [];
+              const updatedErrors = currentErrors.find((err) => err.id === value.id)
+                ? currentErrors
+                : [...currentErrors, { id: value.id, errorMessage }];
+              return {
+                ...prevErrors,
+                [errorKey]: updatedErrors,
+              };
             });
           }
         }
@@ -121,19 +100,19 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
     };
 
     updateContextValues();
-  }, [state.inputs]);
+  }, [inputs]);
 
   /**
-   * biome-ignore lint/correctness/useExhaustiveDependencies(state.context): Valdation should re-run whenever context updates
+   * biome-ignore lint/correctness/useExhaustiveDependencies(context): Valdation should re-run whenever context updates
    * biome-ignore lint/correctness/useExhaustiveDependencies(touchedInputs[name]): No need to re-run validation when touchedInputs changes.
    */
   useEffect(() => {
-    for (const name of Object.keys(state.inputs)) {
+    for (const name of Object.keys(inputs)) {
       if (touchedInputs[name]) {
-        validateInput(name, state.inputs[name]);
+        validateInput(name, inputs[name]);
       }
     }
-  }, [state.context, state.inputs]);
+  }, [context, inputs]);
 
   // Validation logic
   const validateInput = (name: string, value: string) => {
@@ -141,7 +120,7 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
 
     for (const rule of inputValidations[name] || []) {
       if (rule.type === ValidationType.expression) {
-        const result = parser.parse(rule.value).evaluate({ context: state.context, inputs: state.inputs });
+        const result = parser.parse(rule.value).evaluate({ context, inputs });
         if (!result) errors.push({ id: rule.id, errorMessage: rule.errorMessage });
       }
       if (rule.type === ValidationType.regex) {
@@ -149,19 +128,19 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
       }
     }
 
-    dispatch({ type: "SET_ERRORS", payload: { name, errors } });
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: errors }));
   };
 
   // Handle input change
   const handleInputChange = (name: string, value: string) => {
     setTouchedInputs((prev) => ({ ...prev, [name]: true }));
-    dispatch({ type: "UPDATE_INPUT", payload: { name, value } });
+    setInputs((prevInputs) => ({ ...prevInputs, [name]: value }));
     // validateInput(name, value);
   };
 
   // Generate transaction calldata
   const handleSubmit = () => {
-    if (Object.values(state.errors).some((err) => err.length > 0)) {
+    if (Object.values(errors).some((err) => err.length > 0)) {
       alert("Please fix errors before submitting.");
       return;
     }
@@ -171,15 +150,13 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
     const calldata = encodeFunctionData({
       abi: [abiItem],
       functionName: abiItem.name,
-      args: spec.onFinalize.calldataArgs.map((arg) =>
-        parser.parse(arg).evaluate({ context: state.context, inputs: state.inputs }),
-      ),
+      args: spec.onFinalize.calldataArgs.map((arg) => parser.parse(arg).evaluate({ context, inputs })),
     });
 
     const transaction: Transaction = {
       type: spec.summaryView as TransactionType,
-      value: parser.parse(spec.onFinalize.value).evaluate({ context: state.context, inputs: state.inputs }),
-      to: parser.parse(spec.onFinalize.to).evaluate({ context: state.context, inputs: state.inputs }),
+      value: parser.parse(spec.onFinalize.value).evaluate({ context, inputs }),
+      to: parser.parse(spec.onFinalize.to).evaluate({ context, inputs }),
       data: calldata,
     };
 
@@ -194,11 +171,12 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
         <div key={input.name}>
           {input.type === "TextField" && (
             <TextField
+              id={`textfield-${spec.name}-${input.name}`}
               label={input.label}
-              value={state.inputs[input.name]}
+              value={inputs[input.name]}
               onChange={(e) => handleInputChange(input.name, e.target.value)}
-              error={!!state.errors[input.name]?.length}
-              helperText={state.errors[input.name]?.map((err) => err.errorMessage).join(", ")}
+              error={!!errors[input.name]?.length}
+              helperText={errors[input.name]?.map((err) => err.errorMessage).join(", ")}
               fullWidth
               margin="normal"
             />
@@ -206,7 +184,7 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
 
           {input.type === "SelectOne" && (
             <Autocomplete
-              id={`auto-complete-${input.name}`}
+              id={`auto-complete-${spec.name}-${input.name}`}
               freeSolo
               options={
                 input.options?.find((option) => option.chainId === chainId)?.options ||
@@ -250,9 +228,7 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
                     <Typography>{detail.label}</Typography>
                   </Grid>
                   <Grid size={8}>
-                    <Typography>
-                      {parser.parse(detail.value).evaluate({ context: state.context, inputs: state.inputs }).toString()}
-                    </Typography>
+                    <Typography>{parser.parse(detail.value).evaluate({ context, inputs }).toString()}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -264,7 +240,7 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
       )}
 
       <Grid container spacing={1} sx={{ marginTop: 1 }}>
-        {Object.values(state.errors)
+        {Object.values(errors)
           .flat()
           .map((error, index) => (
             <Grid size={12} key={`${error.id}-${index}`}>
@@ -279,7 +255,7 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
         sx={{ marginTop: 1 }}
         onClick={handleSubmit}
         fullWidth
-        disabled={Object.values(state.errors).some((err) => err.length > 0)}
+        disabled={Object.values(errors).some((err) => err.length > 0)}
       >
         Add to batch
       </Button>

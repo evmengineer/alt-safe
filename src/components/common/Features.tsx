@@ -1,22 +1,25 @@
-import { Box, Typography } from "@mui/material";
+import { Card, CardContent, Typography } from "@mui/material";
 import type React from "react";
 
 interface FeatureBoxProps {
-  icon: string;
+  icon: JSX.Element;
   title: string;
   description: string;
 }
 
 const FeatureBox: React.FC<FeatureBoxProps> = ({ icon, title, description }) => {
   return (
-    <Box>
-      <Typography variant="h5" fontWeight={600}>
-        {icon} {title}
-      </Typography>
-      <Typography variant="body1" sx={{ opacity: 0.8 }}>
-        {description}
-      </Typography>
-    </Box>
+    <Card sx={{ height: "100%" }}>
+      <CardContent>
+        {icon}
+        <Typography variant="h5" fontWeight={600}>
+          {title}
+        </Typography>
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          {description}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 };
 

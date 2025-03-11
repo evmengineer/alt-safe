@@ -69,17 +69,18 @@ const NavigationBar: React.FC = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: "transparent" }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {/* Left Section: App Name and Buttons */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography
-            className="gradientText"
+            fontWeight="bold"
+            color="primary"
             variant="h6"
             sx={{ marginRight: 4, cursor: "pointer" }}
             onClick={() => navigate("/")}
           >
-            ALT Wallet
+            &lt;ALT&gt; Safe
           </Typography>
         </Box>
 

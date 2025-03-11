@@ -34,7 +34,7 @@ export enum ValueFetchType {
   RPC_CALL = "rpcCall",
 }
 
-export type ContextFetchDataType = { method: string; to: string; args: string[] };
+export type ContextFetchDataType = { method: string; to: string; args: string[]; errorMessage?: string };
 
 export type ContextItem = { type: string; data: ContextFetchDataType; id: string };
 

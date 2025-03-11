@@ -434,7 +434,7 @@ const CreateTransaction: React.FC = () => {
               <span>
                 <Button
                   disabled={transactions.length === 0 || !copyUnsignedTxButtonEnabled}
-                  variant="contained"
+                  variant="outlined"
                   onClick={handleCopyToClipboard}
                   startIcon={<FileUploadIcon />}
                   fullWidth
@@ -450,12 +450,12 @@ const CreateTransaction: React.FC = () => {
               <span>
                 <Button
                   disabled={transactions.length === 0 || signature === undefined}
-                  variant="contained"
+                  variant="outlined"
                   onClick={handleCopyToClipboardSigned}
                   startIcon={<ContentCopyIcon />}
                   fullWidth
                 >
-                  Copy signed transaction for aggregation
+                  Copy signed transaction
                 </Button>
               </span>
             </Tooltip>
@@ -464,7 +464,7 @@ const CreateTransaction: React.FC = () => {
           <Grid size={4}>
             <Button
               disabled={transactions.length === 0}
-              variant="contained"
+              variant="outlined"
               onClick={handleViewSafeTransaction}
               fullWidth
               startIcon={<VisibilityIcon />}

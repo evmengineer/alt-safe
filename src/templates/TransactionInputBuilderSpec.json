@@ -65,7 +65,8 @@
                 "data": {
                   "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
                   "to": "inputs.tokenAddress",
-                  "args": ["context.safeAddress"]
+                  "args": ["context.safeAddress"],
+                  "errorMessage": "Unable to fetch balance. Check if the token address is correct."
                 }
               }
             },
@@ -77,7 +78,8 @@
                 "data": {
                   "method": "function decimals() public view returns (uint8)",
                   "to": "inputs.tokenAddress",
-                  "args": []
+                  "args": [],
+                  "errorMessage": "Unable to fetch decimals. Check if the token address is correct."
                 }
               }
             }

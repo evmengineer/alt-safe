@@ -188,7 +188,7 @@ const ViewSafeTransactionDialog: React.FC<ViewSafeTransactionDialogProps> = ({
         >
           Copy to clipboard
         </Button>
-        <Button onClick={onClose} variant="contained">
+        <Button onClick={onClose} variant="outlined">
           Close
         </Button>
       </DialogActions>

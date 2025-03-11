@@ -102,7 +102,9 @@ const CreateSafe: React.FC = () => {
         args: [useSingletonL2 ? safeDeployment.singletonL2 : safeDeployment.singleton, initData, salt],
       });
 
-      if (result.result !== proxyAddress) {
+      const newSafeAddress = result.result;
+
+      if (newSafeAddress !== proxyAddress) {
         setError("Expected proxy address does not match the calculated proxy address");
         return;
       }
@@ -114,19 +116,28 @@ const CreateSafe: React.FC = () => {
         (useSingletonL2 ? safeDeployment.singletonL2 : safeDeployment.singleton) &&
         initData
       ) {
-        setProxyAddress(result.result);
+        setProxyAddress(newSafeAddress);
         const existingAccounts = (await storage.getItem(STORAGE_KEY.SAFE_ACCOUNTS)) as SafeAccount[];
+
+        // No account in storage
         if (!existingAccounts) {
-          await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [{ address: result.result, chainId: account.chainId }]);
-        } else if (
-          !existingAccounts.find(
-            (safeAccount) => safeAccount.address === result.result && safeAccount.chainId === account.chainId,
-          )
-        ) {
+          await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [{ address: newSafeAddress, chainIds: [account.chainId] }]);
+          return;
+        }
+
+        const safeAccount = existingAccounts.find((acc) => acc.address === newSafeAddress);
+        // No Safe account with address === new Safe address in storage
+        if (!safeAccount) {
           await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [
             ...existingAccounts,
-            { address: result.result, chainId: account.chainId },
+            { address: newSafeAddress, chainIds: [account.chainId] },
           ]);
+        } else {
+          const updatedSafeAccounts = [
+            ...existingAccounts.filter((acc) => acc.address !== newSafeAddress),
+            { address: newSafeAddress, chainIds: [...safeAccount.chainIds, account.chainId] },
+          ];
+          await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, updatedSafeAccounts);
         }
       }
     }

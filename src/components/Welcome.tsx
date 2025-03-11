@@ -3,11 +3,14 @@ import Grid from "@mui/material/Grid2";
 import { useNavigate } from "react-router-dom";
 import FeatureBox from "./common/Features";
 import "../index.css";
+import FeaturedPlayListIcon from "@mui/icons-material/FeaturedPlayList";
+import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import ShieldIcon from "@mui/icons-material/Shield";
 import { supportedChains } from "../wagmi";
 
-const Home: React.FC = () => {
+const Welcome: React.FC = () => {
   const navigate = useNavigate();
-
   return (
     <Box
       sx={{
@@ -21,10 +24,10 @@ const Home: React.FC = () => {
       }}
     >
       <Container maxWidth="md">
-        <Typography variant="h1" className="gradientText">
-          ALT Wallet
+        <Typography variant="h1" fontWeight="bold" color="primary">
+          &lt;ALT&gt; Safe
         </Typography>
-        <Typography variant="h5">
+        <Typography variant="h6" gutterBottom>
           A simple alternative user interface to interact with Safe Smart Account contracts.
         </Typography>
         <Button sx={{ margin: 4 }} onClick={() => navigate("/home")} variant="contained">
@@ -33,33 +36,32 @@ const Home: React.FC = () => {
         <Grid container spacing={4} size={12}>
           <Grid size={{ md: 6, sm: 12 }}>
             <FeatureBox
-              icon="🔒"
-              title="Non-Custodial"
-              description="You have full control over your funds. No intermediaries, no risks."
+              icon={<IntegrationInstructionsIcon />}
+              title="Templates"
+              description="Easy to extend using JSON templates"
+            />
+          </Grid>
+          <Grid size={{ md: 6, sm: 12 }}>
+            <FeatureBox icon={<ShieldIcon />} title="Privacy" description="No trackers, No data collection" />
+          </Grid>
+          <Grid size={{ md: 6, sm: 12 }}>
+            <FeatureBox
+              icon={<FeaturedPlayListIcon />}
+              title="All-inclusive"
+              description="Execute multi-sig, batched transactions"
             />
           </Grid>
           <Grid size={{ md: 6, sm: 12 }}>
             <FeatureBox
-              icon="⚡"
+              icon={<RemoveCircleIcon />}
               title="No Backend"
-              description="Enjoy fast and seamless transactions with a backend-less architecture."
+              description="Easy to deploy, no backend required"
             />
           </Grid>
-          <Grid size={{ md: 6, sm: 12 }}>
-            <FeatureBox
-              icon="🔗"
-              title="Bring Your Own RPC"
-              description="Customize your experience by connecting to any RPC URL of your choice."
-            />
-          </Grid>
-          <Grid size={{ md: 6, sm: 12 }}>
-            <FeatureBox icon="🛡️" title="Full Privacy" description="No trackers, No data collection." />
-          </Grid>
-
           <Grid size={12}>
             <Typography>
               <Link href="https://github.com/evmengineer/alt-wallet" target="_blank">
-                View Soruce Code
+                View source code
               </Link>
             </Typography>
           </Grid>
@@ -81,4 +83,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Welcome;

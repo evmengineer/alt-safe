@@ -15,12 +15,12 @@ import SafeInfo from "./components/safeInfo/SafeInfo.tsx";
 import AggregateSignaturesAndExecute from "./components/transaction/AggregateSignaturesAndExecute.tsx";
 import CreateTransaction from "./components/transaction/CreateTransaction.tsx";
 import { WalletProvider } from "./context/WalletContext";
-import SafeLiteThemeProvider from "./theme/SafeLiteThemeProvider.tsx";
+import AppThemeProvider from "./theme/AppThemeProvider.tsx";
 
 function App() {
   return (
     <>
-      <SafeLiteThemeProvider>
+      <AppThemeProvider>
         <WalletProvider>
           <Router>
             <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
@@ -48,7 +48,7 @@ function App() {
             </Box>
           </Router>
         </WalletProvider>
-      </SafeLiteThemeProvider>
+      </AppThemeProvider>
     </>
   );
 }

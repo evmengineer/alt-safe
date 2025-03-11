@@ -38,7 +38,7 @@ interface WalletContextType {
 
 export type SafeAccount = {
   address: Address;
-  chainId: number;
+  chainIds: number[];
 };
 
 export type CustomDeployment = {

@@ -30,8 +30,6 @@ const TransactionBuilder: React.FC<TransactionBuilderProps> = ({
   const keys = txBuilderSpec.flatMap((group) => group.actions.map((action) => action.name));
   const groupNames = txBuilderSpec.map((group) => group.groupName);
 
-  console.log("keys", keys, selectedTransactionType);
-
   return (
     <Grid container spacing={2} sx={{ overflowY: "scroll", height: "60vh", scrollbarWidth: "thin" }}>
       <Grid size={4}>
@@ -73,6 +71,7 @@ const TransactionBuilder: React.FC<TransactionBuilderProps> = ({
         )}
         {groupNames.includes(group) && keys.includes(selectedTransactionType) && (
           <TransactionInputBuilder
+            key={`${group}-${selectedTransactionType}`}
             onAdd={handleAddTransaction}
             spec={(() => {
               const groupSpec = txBuilderSpec.find((spec) => spec.groupName === group);

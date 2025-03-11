@@ -34,13 +34,13 @@ const SafeInfo: React.FC = () => {
           </Typography>
         </Grid>
         <Grid container size={12}>
-          <Grid size={12}>
-            <Button fullWidth variant="contained" color="primary" onClick={handleBuildTransaction}>
+          <Grid size={6}>
+            <Button fullWidth variant="contained" onClick={handleBuildTransaction}>
               Build a transaction
             </Button>
           </Grid>
-          <Grid size={12}>
-            <Button fullWidth variant="contained" color="primary" onClick={handleAggregateSignatures}>
+          <Grid size={6}>
+            <Button fullWidth variant="outlined" onClick={handleAggregateSignatures}>
               Aggregate signatures and execute
             </Button>
           </Grid>

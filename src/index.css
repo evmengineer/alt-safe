@@ -33,10 +33,3 @@
   --warning-color: #a6792c; /* Amber Brown */
   --hover-background: #32383d; /* Soft Gunmetal */
 }
-
-.gradientText {
-  background: linear-gradient(90deg, #f8f4ef, #daff0a);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
-}

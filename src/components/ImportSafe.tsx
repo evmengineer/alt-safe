@@ -44,16 +44,35 @@ const ImportSafe: React.FC = () => {
     if (isAddress(address)) {
       setSafeAccount(address);
       const safeAccounts = (await storage.getItem(STORAGE_KEY.SAFE_ACCOUNTS)) as SafeAccount[];
+
+      // No Safe accounts in storage
       if (safeAccounts === null) {
-        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [{ address, chainId: account.chainId }]);
+        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [{ address, chainIds: [account.chainId] }]);
         setImported(true);
-      } else if (safeAccounts.find((account) => account.address === address)) {
-        setError("Address already imported");
-      } else {
+        return;
+      }
+
+      const safeAccount = safeAccounts.find((acc) => acc.address === address);
+
+      // No Safe account with address === import address in storage
+      if (!safeAccount) {
         setError(undefined);
         setImported(true);
-        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [...safeAccounts, { address, chainId: account.chainId }]);
+        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [...safeAccounts, { address, chainIds: [account.chainId] }]);
+      } else if (account.chainId && !safeAccount.chainIds.includes(account.chainId)) {
+        // Safe account with address === import address exists but chainid is not present
+
+        const updatedSafeAccounts = [
+          ...safeAccounts.filter((acc) => acc.address !== address),
+          { address, chainIds: [...safeAccount.chainIds, account.chainId] },
+        ];
+        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, updatedSafeAccounts);
+        setImported(true);
+        return;
       }
+
+      setError("Safe account already exists");
+      setImported(false);
     } else {
       setError("Invalid address");
     }

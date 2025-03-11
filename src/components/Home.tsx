@@ -19,7 +19,7 @@ const Home: React.FC = () => {
             </Button>
           </Grid>
           <Grid size={6}>
-            <Button onClick={() => navigate("/import")} variant="contained" fullWidth>
+            <Button onClick={() => navigate("/import")} variant="outlined" fullWidth>
               Import
             </Button>
           </Grid>

@@ -55,7 +55,7 @@ const ExistingSafeAccounts: React.FC = () => {
           <Typography variant="h4">Safe Accounts</Typography>
         </Grid>
         <Grid>
-          <Button variant="contained" color="primary" startIcon={<HistoryIcon />} onClick={() => onHistoryClick()}>
+          <Button variant="outlined" startIcon={<HistoryIcon />} onClick={() => onHistoryClick()}>
             Transaction History
           </Button>
         </Grid>
@@ -112,7 +112,7 @@ const AccountCard: React.FC<{
                 Balance: {formatUnits(balance?.value || 0n, 18)} {balance?.symbol}
               </Typography>
             </Grid>
-            <Grid size={12}>Chain: {safeAccount.chainId}</Grid>
+            <Grid size={12}>Chains: {safeAccount.chainIds.join(", ")}</Grid>
           </Grid>
         </Grid>
         <CardActions>

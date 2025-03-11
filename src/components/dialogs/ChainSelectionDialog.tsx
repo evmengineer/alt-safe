@@ -124,7 +124,7 @@ const ChainSelectionDialog: React.FC<ChainSelectionDialogProps> = ({ open, onClo
 
           <Grid size={12}>
             <Button fullWidth onClick={handleAddCustomDeployment} variant="contained">
-              Use custom contract addresses
+              Use custom contract addresses (only v1.4.1)
             </Button>
           </Grid>
 
@@ -136,14 +136,14 @@ const ChainSelectionDialog: React.FC<ChainSelectionDialogProps> = ({ open, onClo
             <Alert severity="warning">This will clear local storage used by the app.</Alert>
           </Grid>
           <Grid size={12}>
-            <Button fullWidth disabled={cleared} onClick={handleClearStorage} variant="contained">
+            <Button fullWidth disabled={cleared} onClick={handleClearStorage} variant="outlined">
               Clear App State
             </Button>
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" onClick={onClose} color="primary">
+        <Button variant="outlined" onClick={onClose}>
           Close
         </Button>
       </DialogActions>
