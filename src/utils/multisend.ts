@@ -1,12 +1,12 @@
-import { concatHex, encodePacked, toHex } from "viem";
+import { concatHex, encodePacked } from "viem";
 import type { MetaTransaction } from "./utils";
 
 export const encodeMetaTransaction = (tx: MetaTransaction): `0x${string}` => {
-  const data = toHex(tx.data);
   const encoded = encodePacked(
     ["uint8", "address", "uint256", "uint256", "bytes"],
-    [tx.operation, tx.to, tx.value, BigInt(data.length / 2 - 1), data],
+    [tx.operation, tx.to, tx.value, BigInt((tx.data.length - 2) / 2), tx.data],
   );
+
   return encoded.slice(2) as `0x${string}`;
 };
 

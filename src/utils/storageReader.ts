@@ -11,7 +11,7 @@ import {
   toHex,
   zeroHash,
 } from "viem";
-import safeArtifact from "../safe-contracts/artifacts/Safe.json";
+import safeABI from "../abis/Safe.json";
 
 export const FALLBACK_HANDLER_STORAGE_SLOT = "0x6c9a6c4a39284e37ed1cf53d337577d14212a4870fb976a4366c693b939918d5";
 export const GUARD_STORAGE_SLOT = "0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8";
@@ -101,7 +101,7 @@ export const fetchStorageData = async (accountAddress: Address, publicClient: Pu
 
   const contract = getContract({
     address: accountAddress,
-    abi: safeArtifact.abi,
+    abi: safeABI,
     client: publicClient,
   });
 

@@ -1,4 +1,4 @@
-import { Alert, Button, Container, ListItem, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Button, Container, ListItem, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Grid from "@mui/material/Grid2";
 import { readContract } from "@wagmi/core";
@@ -9,6 +9,7 @@ import { useAccount } from "wagmi";
 import { useSafeWalletContext } from "../../../context/WalletContext";
 import { type Transaction, type TransactionSpec, type TransactionType, ValidationType } from "../../../context/types";
 import { config } from "../../../wagmi";
+import AccountAddress from "../../common/AccountAddress";
 
 interface TransactionInputBuilderProps {
   onAdd: (transaction: Transaction) => void;
@@ -24,7 +25,7 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
   // Initialize state dynamically
   const initialContext = {
     safeAddress: safeAccount,
-    ...Object.fromEntries(Object.entries(spec.context).map(([key, item]) => [key, item.defaultValue])),
+    ...Object.fromEntries(Object.entries(spec.context || {}).map(([key, item]) => [key, item?.defaultValue])),
   };
 
   const initialInputs = Object.fromEntries(spec.inputs.map((input) => [input.name, ""]));
@@ -45,6 +46,29 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
     acc[name].push(rest);
     return acc;
   }, {});
+
+  const getDetailValue = (type: string, value: string) => {
+    const val = parser.parse(value).evaluate({ context, inputs });
+    if (val === undefined) {
+      return;
+    }
+    const parsedValue = val.toString();
+    if (type === "Text") {
+      return <Typography>{parsedValue}</Typography>;
+    }
+
+    if (type === "Address") {
+      return (
+        <Tooltip title={parsedValue}>
+          <span>
+            <AccountAddress address={parsedValue} short />
+          </span>
+        </Tooltip>
+      );
+    }
+
+    return <Typography>{value}</Typography>;
+  };
 
   // Fetch context values from blockchain
   /**
@@ -171,6 +195,7 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
         <div key={input.name}>
           {input.type === "TextField" && (
             <TextField
+              key={`textfield-${spec.name}-${input.name}`}
               id={`textfield-${spec.name}-${input.name}`}
               label={input.label}
               value={inputs[input.name]}
@@ -222,14 +247,12 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
 
           <Grid container spacing={1}>
             {spec.detailsView.map((detail, index) => (
-              <Grid size={12} key={`${index}-${detail.label}`}>
+              <Grid sx={{ overflowX: "scroll" }} size={12} key={`${index}-${detail.label}`}>
                 <Grid container spacing={2}>
                   <Grid size={4}>
                     <Typography>{detail.label}</Typography>
                   </Grid>
-                  <Grid size={8}>
-                    <Typography>{parser.parse(detail.value).evaluate({ context, inputs }).toString()}</Typography>
-                  </Grid>
+                  <Grid size={8}>{getDetailValue(detail.type, detail.value)} </Grid>
                 </Grid>
               </Grid>
             ))}

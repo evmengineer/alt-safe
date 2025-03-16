@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -59,7 +60,7 @@ const ChangeAccountDialog: React.FC<DisconnectDialogProps> = ({ open, onClose, o
                   </Button>
                 </Grid>
               ))}
-              <div>{error?.message}</div>
+              {error?.message && <Alert severity="error">{error?.message}</Alert>}
             </Grid>
           )}
         </Grid>

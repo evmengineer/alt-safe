@@ -18,11 +18,11 @@ import {
 import { encodeFunctionData } from "viem";
 import { useWriteContract } from "wagmi";
 import { useAccount, usePublicClient } from "wagmi";
+import multisendCallOnly from "../../abis/MultiSendCallOnly.json";
+import safe from "../../abis/Safe.json";
 import { STORAGE_KEY } from "../../constants";
 import { type SafeTransactionInfo, useSafeWalletContext } from "../../context/WalletContext";
 import type { ImportData, ImportSignedData, Transaction } from "../../context/types";
-import multisendCallOnly from "../../safe-contracts/artifacts/MultiSendCallOnly.json";
-import safe from "../../safe-contracts/artifacts/Safe.json";
 import { encodeMultiSend } from "../../utils/multisend";
 import { EIP712_SAFE_TX_TYPE, SafeOperation, type SafeTransactionParams } from "../../utils/utils";
 import { config } from "../../wagmi";
@@ -205,7 +205,7 @@ const CreateTransaction: React.FC = () => {
     const gasToken: Address = zeroAddress;
     const refundReceiver: Address = zeroAddress;
 
-    const abi = safe.abi;
+    const abi = safe;
     if (safeAccount === undefined) {
       throw new Error("Safe account is undefined");
     }
@@ -236,7 +236,7 @@ const CreateTransaction: React.FC = () => {
       });
 
       callData = encodeFunctionData({
-        abi: multisendCallOnly.abi,
+        abi: multisendCallOnly,
         functionName: "multiSend",
         args: [encodeMultiSend(metaTransactions)],
       });
@@ -274,7 +274,7 @@ const CreateTransaction: React.FC = () => {
     if (signature && safeTransaction && safeAccount) {
       try {
         const { request } = await simulateContract(config, {
-          abi: safe.abi,
+          abi: safe,
           address: safeAccount,
           functionName: "execTransaction",
           args: [
@@ -290,19 +290,22 @@ const CreateTransaction: React.FC = () => {
             signature,
           ],
         });
+        setWaitForTransactionDialogOpen(true);
 
         const hash = await writeContractAsync(request);
         setTransactionHash(hash);
-        setWaitForTransactionDialogOpen(true);
         await updateStorage(hash);
       } catch (err) {
         console.error(err);
+        setWaitForTransactionDialogOpen(false);
         if (err instanceof BaseError) {
           const revertError = err.walk((err) => err instanceof ContractFunctionRevertedError);
           if (revertError instanceof ContractFunctionRevertedError) {
             const errorName = revertError.data?.errorName ?? "";
-            setError(`${errorName}·${revertError.reason}`);
+            setError(`${errorName} ${revertError.reason}`);
           }
+        } else {
+          setError("Transaction failed");
         }
       }
     }
@@ -360,7 +363,7 @@ const CreateTransaction: React.FC = () => {
               subheader={
                 <Grid container spacing={1}>
                   <Grid>
-                    <AccountAddress address={safeAccount} short />
+                    <AccountAddress address={safeAccount} />
                   </Grid>
                   <Grid> {safeStorage ? `${safeStorage.threshold?.toString()}/${safeStorage.ownerCount}` : ""}</Grid>
                 </Grid>

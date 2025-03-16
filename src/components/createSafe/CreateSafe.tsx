@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { type Address, zeroAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
+import safeProxyFactoryABI from "../../abis/SafeProxyFactory.json";
 import { STORAGE_KEY } from "../../constants";
 import { type SafeAccount, useSafeWalletContext } from "../../context/WalletContext";
-import safeProxyFactory from "../../safe-contracts/artifacts/SafeProxyFactory.json";
 import { calculateInitData, getProxyAddress } from "../../utils/utils";
 import { config } from "../../wagmi";
 import AccountAddress from "../common/AccountAddress";
@@ -92,11 +92,9 @@ const CreateSafe: React.FC = () => {
 
   const handleCreateSafe = async () => {
     if (proxyAddress && safeDeployment) {
-      const abi = safeProxyFactory.abi;
-
       // Create the Safe
       const result = await simulateContract(config, {
-        abi,
+        abi: safeProxyFactoryABI,
         address: safeDeployment.proxyFactory,
         functionName: "createProxyWithNonce",
         args: [useSingletonL2 ? safeDeployment.singletonL2 : safeDeployment.singleton, initData, salt],

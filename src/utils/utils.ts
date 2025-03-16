@@ -1,19 +1,11 @@
-import {
-  type Abi,
-  type Address,
-  encodeFunctionData,
-  encodePacked,
-  getContractAddress,
-  keccak256,
-  zeroAddress,
-} from "viem";
+import { type Address, encodeFunctionData, encodePacked, getContractAddress, keccak256, zeroAddress } from "viem";
+import safeABI from "../abis/Safe.json";
 import {
   type SafeDeployment,
   SafeDeploymentType,
   SafeVersion,
   canonicalAddresses_141,
 } from "../safe-contracts/addresses/addresses";
-import safe from "../safe-contracts/artifacts/Safe.json";
 import safeProxy from "../safe-contracts/artifacts/SafeProxy.json";
 
 export const getProxyAddress = (
@@ -43,7 +35,7 @@ export const getProxyAddress = (
 
 export const calculateInitData = (owners: Address[], threshold: number, fallbackHandler: Address) => {
   const setupCalldata = encodeFunctionData({
-    abi: safe.abi as Abi,
+    abi: safeABI,
     functionName: "setup",
     args: [owners, threshold, zeroAddress, "0x", fallbackHandler, `0x${"00".repeat(20)}`, 0, `0x${"00".repeat(20)}`],
   });

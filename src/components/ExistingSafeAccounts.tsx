@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Address } from "viem";
 import { formatUnits } from "viem";
-import { useBalance } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import { STORAGE_KEY } from "../constants";
 import { type SafeAccount, useSafeWalletContext } from "../context/WalletContext";
 import AccountAddress from "./common/AccountAddress";
@@ -88,23 +88,36 @@ const AccountCard: React.FC<{
 }> = ({ safeAccount, onAddressClick, onSettingsClick, onDeleteClick }) => {
   const address = safeAccount.address;
   const { data: balance } = useBalance({ address });
+  const { chainId } = useAccount();
+
+  const isDisabled = !chainId || !safeAccount.chainIds.includes(chainId);
+
   const handleCopyToClipboard = (address: Address) => {
     navigator.clipboard.writeText(address);
   };
 
   return (
-    <Card>
+    <Card
+      sx={{
+        opacity: isDisabled ? 0.5 : 1,
+        pointerEvents: isDisabled ? "none" : "auto",
+      }}
+    >
       <CardContent style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Grid container size={12} alignItems="center">
-          <Grid sx={{ cursor: "pointer" }} onClick={() => onAddressClick(address)}>
-            <Grid>
-              <AccountAddress address={address} />
-            </Grid>
+        <Grid
+          container
+          size={12}
+          alignItems="center"
+          sx={{ cursor: isDisabled ? "not-allowed" : "pointer" }}
+          onClick={() => !isDisabled && onAddressClick(address)}
+        >
+          <Grid size={12}>
+            <Typography variant="h6" fontWeight="bold">
+              {safeAccount.name}
+            </Typography>
           </Grid>
           <Grid>
-            <IconButton size="small" onClick={() => handleCopyToClipboard(address)} sx={{ ml: 1 }}>
-              <ContentCopyIcon fontSize="small" />
-            </IconButton>
+            <AccountAddress address={address} />
           </Grid>
           <Grid container size={12}>
             <Grid size={12}>
@@ -116,10 +129,13 @@ const AccountCard: React.FC<{
           </Grid>
         </Grid>
         <CardActions>
-          <IconButton onClick={() => onSettingsClick(address)}>
+          <IconButton size="small" onClick={() => handleCopyToClipboard(address)} sx={{ ml: 1 }} disabled={isDisabled}>
+            <ContentCopyIcon fontSize="small" />
+          </IconButton>
+          <IconButton onClick={() => onSettingsClick(address)} disabled={isDisabled}>
             <SettingsIcon />
           </IconButton>
-          <IconButton onClick={() => onDeleteClick(address)}>
+          <IconButton onClick={() => onDeleteClick(address)} disabled={isDisabled}>
             <DeleteIcon />
           </IconButton>
         </CardActions>

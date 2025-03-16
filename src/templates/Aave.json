@@ -1,0 +1,388 @@
+{
+  "groupName": "Aave",
+  "chainIds": [],
+  "actions": [
+    {
+      "name": "Supply",
+      "display": {
+        "description": "Aave Supply"
+      },
+      "functionSignature": "function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode)",
+      "summaryView": "contractCall",
+      "context": {
+        "balance": {
+          "type": "uint256",
+          "defaultValue": ""
+        },
+        "decimals": {
+          "type": "uint256",
+          "defaultValue": ""
+        },
+        "allowance": {
+          "type": "uint256",
+          "defaultValue": "0"
+        }
+      },
+      "inputs": [
+        {
+          "name": "asset",
+          "label": "Token Address",
+          "type": "TextField"
+        },
+        {
+          "name": "pool",
+          "label": "Pool Address",
+          "type": "TextField"
+        },
+        {
+          "name": "amount",
+          "label": "Token Amount",
+          "type": "TextField"
+        },
+        {
+          "name": "onBehalfOf",
+          "label": "Behalf Of",
+          "type": "TextField"
+        },
+        {
+          "name": "referralCode",
+          "label": "Referral Code",
+          "type": "TextField"
+        }
+      ],
+      "detailsView": [
+        {
+          "label": "Current Balance",
+          "value": "context.balance / pow(10, context.decimals)",
+          "type": "Text"
+        },
+        {
+          "label": "Pool allowance",
+          "value": "context.allowance / pow(10, context.decimals)",
+          "type": "Text"
+        }
+      ],
+      "onUpdateValidations": [],
+      "onInputUpdate": [
+        {
+          "variable": "context.decimals",
+          "value": {
+            "type": "rpcCall",
+            "id": "rpcCall_decimals",
+            "data": {
+              "method": "function decimals() public view returns (uint8)",
+              "to": "inputs.asset",
+              "args": [],
+              "errorMessage": "Unable to fetch decimals."
+            }
+          }
+        },
+        {
+          "variable": "context.allowance",
+          "value": {
+            "type": "rpcCall",
+            "id": "rpcCall_allowance",
+            "data": {
+              "method": "function allowance(address _owner, address _spender) public view returns (uint256 remaining)",
+              "to": "inputs.asset",
+              "args": ["context.safeAddress", "inputs.pool"],
+              "errorMessage": "Unable to fetch allowance."
+            }
+          }
+        },
+        {
+          "variable": "context.balance",
+          "value": {
+            "type": "rpcCall",
+            "id": "rpcCall_balance",
+            "data": {
+              "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
+              "to": "inputs.asset",
+              "args": ["context.safeAddress"],
+              "errorMessage": "Unable to fetch balance."
+            }
+          }
+        }
+      ],
+      "onFinalize": {
+        "to": "inputs.pool",
+        "value": "0",
+        "calldataArgs": [
+          "inputs.asset",
+          "inputs.amount * pow(10, context.decimals)",
+          "inputs.onBehalfOf",
+          "inputs.referralCode"
+        ]
+      }
+    },
+    {
+      "name": "Withdraw",
+      "display": {
+        "description": "Aave Withdraw"
+      },
+      "functionSignature": "function withdraw(address asset, uint256 amount, address to)",
+      "summaryView": "contractCall",
+      "context": {
+        "balance": {
+          "type": "uint256",
+          "defaultValue": ""
+        },
+        "decimals": {
+          "type": "uint256",
+          "defaultValue": ""
+        }
+      },
+      "inputs": [
+        {
+          "name": "asset",
+          "label": "Token Address",
+          "type": "TextField"
+        },
+        {
+          "name": "amount",
+          "label": "Token Amount",
+          "type": "TextField"
+        },
+        {
+          "name": "to",
+          "label": "Recipient Address",
+          "type": "TextField"
+        }
+      ],
+      "detailsView": [
+        {
+          "label": "Pool address",
+          "value": "inputs.pool",
+          "type": "Address"
+        },
+        {
+          "label": "Current Balance",
+          "value": "context.balance / pow(10, context.decimals)",
+          "type": "Text"
+        }
+      ],
+      "onUpdateValidations": [],
+      "onInputUpdate": [
+        {
+          "variable": "context.decimals",
+          "value": {
+            "type": "rpcCall",
+            "id": "rpcCall_decimals",
+            "data": {
+              "method": "function decimals() public view returns (uint8)",
+              "to": "inputs.asset",
+              "args": [],
+              "errorMessage": "Unable to fetch decimals."
+            }
+          }
+        },
+        {
+          "variable": "context.balance",
+          "value": {
+            "type": "rpcCall",
+            "id": "rpcCall_balance",
+            "data": {
+              "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
+              "to": "inputs.asset",
+              "args": ["context.safeAddress"],
+              "errorMessage": "Unable to fetch balance."
+            }
+          }
+        }
+      ],
+      "onFinalize": {
+        "to": "inputs.pool",
+        "value": "0",
+        "calldataArgs": ["inputs.asset", "inputs.amount * pow(10, context.decimals)", "inputs.to"]
+      }
+    },
+    {
+      "name": "Borrow",
+      "display": {
+        "description": "Aave Borrow"
+      },
+      "functionSignature": "function borrow(address asset, uint256 amount, uint256 interestRateMode, uint16 referralCode, address onBehalfOf)",
+      "summaryView": "contractCall",
+      "context": {
+        "balance": {
+          "type": "uint256",
+          "defaultValue": ""
+        },
+        "decimals": {
+          "type": "uint256",
+          "defaultValue": ""
+        }
+      },
+      "inputs": [
+        {
+          "name": "pool",
+          "label": "Pool Address",
+          "type": "TextField"
+        },
+        {
+          "name": "asset",
+          "label": "Token Address",
+          "type": "TextField"
+        },
+        {
+          "name": "amount",
+          "label": "Borrow Amount",
+          "type": "TextField"
+        },
+        {
+          "name": "interestRateMode",
+          "label": "Interest Rate Mode (1 for Stable, 2 for Variable)",
+          "type": "TextField"
+        },
+        {
+          "name": "referralCode",
+          "label": "Referral Code",
+          "type": "TextField"
+        },
+        {
+          "name": "onBehalfOf",
+          "label": "On Behalf Of",
+          "type": "TextField"
+        }
+      ],
+      "detailsView": [
+        {
+          "label": "Current Balance",
+          "value": "context.balance / pow(10, context.decimals)",
+          "type": "Text"
+        }
+      ],
+      "onUpdateValidations": [],
+      "onInputUpdate": [
+        {
+          "variable": "context.decimals",
+          "value": {
+            "type": "rpcCall",
+            "id": "rpcCall_decimals",
+            "data": {
+              "method": "function decimals() public view returns (uint8)",
+              "to": "inputs.asset",
+              "args": [],
+              "errorMessage": "Unable to fetch decimals."
+            }
+          }
+        },
+        {
+          "variable": "context.balance",
+          "value": {
+            "type": "rpcCall",
+            "id": "rpcCall_balance",
+            "data": {
+              "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
+              "to": "inputs.asset",
+              "args": ["context.safeAddress"],
+              "errorMessage": "Unable to fetch balance."
+            }
+          }
+        }
+      ],
+      "onFinalize": {
+        "to": "inputs.pool",
+        "value": "0",
+        "calldataArgs": [
+          "inputs.asset",
+          "inputs.amount * pow(10, context.decimals)",
+          "inputs.interestRateMode",
+          "inputs.referralCode",
+          "inputs.onBehalfOf"
+        ]
+      }
+    },
+    {
+      "name": "Repay",
+      "display": {
+        "description": "Aave Repay"
+      },
+      "functionSignature": "function repay(address asset, uint256 amount, uint256 interestRateMode, address onBehalfOf)",
+      "summaryView": "contractCall",
+      "context": {
+        "balance": {
+          "type": "uint256",
+          "defaultValue": ""
+        },
+        "decimals": {
+          "type": "uint256",
+          "defaultValue": ""
+        }
+      },
+      "inputs": [
+        {
+          "name": "pool",
+          "label": "Pool Address",
+          "type": "TextField"
+        },
+        {
+          "name": "asset",
+          "label": "Token Address",
+          "type": "TextField"
+        },
+        {
+          "name": "amount",
+          "label": "Repay Amount",
+          "type": "TextField"
+        },
+        {
+          "name": "interestRateMode",
+          "label": "Interest Rate Mode (1 for Stable, 2 for Variable)",
+          "type": "TextField"
+        },
+        {
+          "name": "onBehalfOf",
+          "label": "On Behalf Of",
+          "type": "TextField"
+        }
+      ],
+      "detailsView": [
+        {
+          "label": "Current Balance",
+          "value": "context.balance / pow(10, context.decimals)",
+          "type": "Text"
+        }
+      ],
+      "onUpdateValidations": [],
+      "onInputUpdate": [
+        {
+          "variable": "context.decimals",
+          "value": {
+            "type": "rpcCall",
+            "id": "rpcCall_decimals",
+            "data": {
+              "method": "function decimals() public view returns (uint8)",
+              "to": "inputs.asset",
+              "args": [],
+              "errorMessage": "Unable to fetch decimals."
+            }
+          }
+        },
+        {
+          "variable": "context.balance",
+          "value": {
+            "type": "rpcCall",
+            "id": "rpcCall_balance",
+            "data": {
+              "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
+              "to": "inputs.asset",
+              "args": ["context.safeAddress"],
+              "errorMessage": "Unable to fetch balance."
+            }
+          }
+        }
+      ],
+      "onFinalize": {
+        "to": "inputs.pool",
+        "value": "0",
+        "calldataArgs": [
+          "inputs.asset",
+          "inputs.amount * pow(10, context.decimals)",
+          "inputs.interestRateMode",
+          "inputs.onBehalfOf"
+        ]
+      }
+    }
+  ]
+}

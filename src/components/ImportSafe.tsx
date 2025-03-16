@@ -15,6 +15,7 @@ const ImportSafe: React.FC = () => {
   const { setSafeAccount, storage } = useSafeWalletContext();
   const account = useAccount();
   const [address, setAddress] = useState<Address>(zeroAddress);
+  const [name, setName] = useState<string>();
   const [error, setError] = useState<string>();
   const [imported, setImported] = useState<boolean>(false);
   const publicClient = usePublicClient();
@@ -47,7 +48,7 @@ const ImportSafe: React.FC = () => {
 
       // No Safe accounts in storage
       if (safeAccounts === null) {
-        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [{ address, chainIds: [account.chainId] }]);
+        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [{ address, chainIds: [account.chainId], name }]);
         setImported(true);
         return;
       }
@@ -58,8 +59,14 @@ const ImportSafe: React.FC = () => {
       if (!safeAccount) {
         setError(undefined);
         setImported(true);
-        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [...safeAccounts, { address, chainIds: [account.chainId] }]);
-      } else if (account.chainId && !safeAccount.chainIds.includes(account.chainId)) {
+        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [
+          ...safeAccounts,
+          { address, chainIds: [account.chainId], name },
+        ]);
+        return;
+      }
+
+      if (account.chainId && !safeAccount.chainIds.includes(account.chainId)) {
         // Safe account with address === import address exists but chainid is not present
 
         const updatedSafeAccounts = [
@@ -98,16 +105,27 @@ const ImportSafe: React.FC = () => {
           Load Safe
         </Button>
       </Grid>
+
       {safeStorage && (
         <Grid size={12}>
-          <ViewSafeStorage safeStorage={safeStorage} />{" "}
+          <ViewSafeStorage safeStorage={safeStorage} />
         </Grid>
       )}
       {safeStorage && (
-        <Grid size={12}>
-          <Button onClick={handleImport} variant="contained">
-            Import Safe
-          </Button>
+        <Grid size={12} spacing={1}>
+          <Grid size={12}>
+            <TextField
+              fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value as `0x${string}`)}
+              placeholder="Enter a readable name for the Safe"
+            />
+          </Grid>
+          <Grid size={12}>
+            <Button onClick={handleImport} variant="contained">
+              Import Safe
+            </Button>
+          </Grid>
         </Grid>
       )}
       {imported && (

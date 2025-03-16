@@ -38,7 +38,7 @@ export type ContextFetchDataType = { method: string; to: string; args: string[];
 
 export type ContextItem = { type: string; data: ContextFetchDataType; id: string };
 
-export type ContextType = { [key: string]: { type: string; value?: ContextItem; defaultValue: string } };
+export type ContextType = { [key: string]: { type: string; defaultValue: string } | undefined };
 export type InputType = { name: string; type: string; options?: Option[]; label: string };
 export type Option = { chainId: number; options: SelectOption[] };
 export type SelectOption = { name: string; value: any };
@@ -53,7 +53,7 @@ export interface TransactionSpec {
   name: string;
   functionSignature: string;
   summaryView: string;
-  context: ContextType;
+  context?: ContextType;
   inputs: InputType[];
   display: { description: string };
   onUpdateValidations: Validation[];

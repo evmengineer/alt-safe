@@ -8,9 +8,9 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { BaseError, ContractFunctionRevertedError, hexToBytes } from "viem";
+import safe from "../../abis/Safe.json";
 import { useSafeWalletContext } from "../../context/WalletContext";
 import type { ImportSignedData, Transaction } from "../../context/types";
-import safe from "../../safe-contracts/artifacts/Safe.json";
 import { type SafeTransactionParams, buildSignatureBytes } from "../../utils/utils";
 import { config } from "../../wagmi";
 import Title from "../common/Title";
@@ -77,7 +77,7 @@ const AggregateSignaturesAndExecute: React.FC = () => {
     if (safeTransaction && safeAccount) {
       try {
         const { request } = await simulateContract(config, {
-          abi: safe.abi,
+          abi: safe,
           address: safeAccount,
           functionName: "execTransaction",
           args: [
