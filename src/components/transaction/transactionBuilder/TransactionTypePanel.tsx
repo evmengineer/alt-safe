@@ -1,6 +1,5 @@
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import BlurCircularIcon from "@mui/icons-material/BlurCircular";
 import CodeIcon from "@mui/icons-material/Code";
 import { Box, Collapse, Divider, List, ListItemText, Typography } from "@mui/material";
@@ -14,7 +13,6 @@ interface TransactionTypePanelProps {
 
 // Default inbuilt transaction types
 const transactionTypes = {
-  Token: { icon: <AttachMoneyIcon />, types: ["Send"] },
   Native: { icon: <AccountBalanceWalletIcon />, types: ["Eth transfer"] },
   Other: { icon: <BlurCircularIcon />, types: ["Smart contract call", "Import"] },
 };

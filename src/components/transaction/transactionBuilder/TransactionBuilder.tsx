@@ -43,12 +43,6 @@ const TransactionBuilder: React.FC<TransactionBuilderProps> = ({
             <InputTransactionData transactionType={TransactionType.ETH_TRANSFER} onAdd={handleAddTransaction} />
           </>
         )}
-        {selectedTransactionType === "Send" && (
-          <>
-            <Typography variant="h6">ERC20 Transfer</Typography>
-            <InputTransactionData transactionType={TransactionType.ERC20_TRANSFER} onAdd={handleAddTransaction} />
-          </>
-        )}
         {selectedTransactionType === "Smart contract call" && (
           <>
             <Typography variant="h6">Smart Contract Call</Typography>

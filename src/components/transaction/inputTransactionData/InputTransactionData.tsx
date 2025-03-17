@@ -1,7 +1,6 @@
 import type React from "react";
 import type { Transaction, TransactionType } from "../../../context/types";
 import ContractCallInput from "./ContractCallInput";
-import Erc20TransferInput from "./Erc20TransferInput";
 import EthTransferInput from "./EthTransferInput";
 
 interface InputTransactionDataProps {
@@ -13,8 +12,6 @@ const InputTransactionData: React.FC<InputTransactionDataProps> = ({ transaction
   switch (transactionType) {
     case "ethTransfer":
       return <EthTransferInput onAdd={onAdd} />;
-    case "erc20Transfer":
-      return <Erc20TransferInput onAdd={onAdd} />;
     case "contractCall":
       return <ContractCallInput onAdd={onAdd} />;
     default:
