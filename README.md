@@ -28,7 +28,7 @@ Validations to ensure user inputs are correct and provide meaningful error messa
 This allows developers and users to seamlessly interact with different smart contracts in a structured and reliable manner.
 
 - [Template specification](./docs/template-specification.md)
-- [Default template](./src/templates/TransactionInputBuilderSpec.json)
+- [Default templates](./src/templates)
 
 This is a [Vite](https://vitejs.dev) project bootstrapped with [`create-wagmi`](https://github.com/wevm/wagmi/tree/main/packages/create-wagmi).
 

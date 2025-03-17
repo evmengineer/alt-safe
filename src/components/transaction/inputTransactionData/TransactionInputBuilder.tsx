@@ -4,6 +4,7 @@ import Grid from "@mui/material/Grid2";
 import { readContract } from "@wagmi/core";
 import { Parser } from "expr-eval";
 import { useEffect, useState } from "react";
+import type React from "react";
 import { type AbiFunction, encodeFunctionData, parseAbi, parseAbiItem } from "viem";
 import { useAccount } from "wagmi";
 import { useSafeWalletContext } from "../../../context/WalletContext";
@@ -241,7 +242,7 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
         </div>
       ))}
 
-      {spec.detailsView.length > 0 ? (
+      {spec.detailsView.length > 0 && (
         <Paper elevation={0} sx={{ padding: 1, marginTop: 1 }}>
           <Typography variant="h6">Details</Typography>
 
@@ -258,8 +259,6 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
             ))}
           </Grid>
         </Paper>
-      ) : (
-        <>No details available.</>
       )}
 
       <Grid container spacing={1} sx={{ marginTop: 1 }}>

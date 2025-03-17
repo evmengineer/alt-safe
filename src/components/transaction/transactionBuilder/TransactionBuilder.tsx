@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid2";
 import type React from "react";
 import { useSafeWalletContext } from "../../../context/WalletContext";
 import { type Transaction, type TransactionSpec, TransactionType } from "../../../context/types";
+import ErrorBoundary from "../../common/ErrorBoundary";
 import InputTransactionData from "../inputTransactionData/InputTransactionData";
 import TransactionInputBuilder from "../inputTransactionData/TransactionInputBuilder";
 import TransactionTypePanel from "./TransactionTypePanel";
@@ -70,14 +71,16 @@ const TransactionBuilder: React.FC<TransactionBuilderProps> = ({
           </>
         )}
         {groupNames.includes(group) && keys.includes(selectedTransactionType) && (
-          <TransactionInputBuilder
-            key={`${group}-${selectedTransactionType}`}
-            onAdd={handleAddTransaction}
-            spec={(() => {
-              const groupSpec = txBuilderSpec.find((spec) => spec.groupName === group);
-              return groupSpec?.actions.find((action) => action.name === selectedTransactionType) as TransactionSpec;
-            })()}
-          />
+          <ErrorBoundary key={`error-boundary-${group}-${selectedTransactionType}`}>
+            <TransactionInputBuilder
+              key={`${group}-${selectedTransactionType}`}
+              onAdd={handleAddTransaction}
+              spec={(() => {
+                const groupSpec = txBuilderSpec.find((spec) => spec.groupName === group);
+                return groupSpec?.actions.find((action) => action.name === selectedTransactionType) as TransactionSpec;
+              })()}
+            />
+          </ErrorBoundary>
         )}
       </Grid>
     </Grid>
