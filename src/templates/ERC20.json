@@ -1,6 +1,6 @@
 {
   "groupName": "ERC20",
-  "chainIds": [],
+  "chainIds": [0],
   "actions": [
     {
       "name": "Transfer",

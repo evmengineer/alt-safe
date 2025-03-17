@@ -1,6 +1,6 @@
 {
   "groupName": "Safe",
-  "chainIds": [],
+  "chainIds": [0],
   "actions": [
     {
       "name": "Add Owner",

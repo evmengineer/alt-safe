@@ -1,3 +1,4 @@
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Alert, Button, Container, ListItem, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Grid from "@mui/material/Grid2";
@@ -244,8 +245,7 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
 
       {spec.detailsView.length > 0 && (
         <Paper elevation={0} sx={{ padding: 1, marginTop: 1 }}>
-          <Typography variant="h6">Details</Typography>
-
+          <InfoOutlinedIcon />
           <Grid container spacing={1} sx={{ overflow: "auto" }}>
             {spec.detailsView.map((detail, index) => (
               <Grid size={12} key={`${index}-${detail.label}`}>

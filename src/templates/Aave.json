@@ -1,6 +1,6 @@
 {
   "groupName": "Aave",
-  "chainIds": [],
+  "chainIds": [0],
   "actions": [
     {
       "name": "Supply",
