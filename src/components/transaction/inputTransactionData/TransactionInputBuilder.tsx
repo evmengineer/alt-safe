@@ -246,9 +246,9 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
         <Paper elevation={0} sx={{ padding: 1, marginTop: 1 }}>
           <Typography variant="h6">Details</Typography>
 
-          <Grid container spacing={1}>
+          <Grid container spacing={1} sx={{ overflow: "auto" }}>
             {spec.detailsView.map((detail, index) => (
-              <Grid sx={{ overflowX: "scroll" }} size={12} key={`${index}-${detail.label}`}>
+              <Grid size={12} key={`${index}-${detail.label}`}>
                 <Grid container spacing={2}>
                   <Grid size={4}>
                     <Typography>{detail.label}</Typography>

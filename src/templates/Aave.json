@@ -134,6 +134,11 @@
       },
       "inputs": [
         {
+          "name": "pool",
+          "label": "Pool Address",
+          "type": "TextField"
+        },
+        {
           "name": "asset",
           "label": "Token Address",
           "type": "TextField"
@@ -150,11 +155,6 @@
         }
       ],
       "detailsView": [
-        {
-          "label": "Pool address",
-          "value": "inputs.pool",
-          "type": "Address"
-        },
         {
           "label": "Current Balance",
           "value": "context.balance / pow(10, context.decimals)",
