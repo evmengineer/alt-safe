@@ -1,5 +1,5 @@
 {
-  "groupName": "Safe",
+  "groupName": "Settings",
   "chainIds": [0],
   "actions": [
     {
@@ -19,12 +19,12 @@
         {
           "name": "owner",
           "label": "New Owner Address",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "_threshold",
           "label": "Threshold",
-          "type": "TextField"
+          "type": "text"
         }
       ],
       "detailsView": [],
@@ -62,17 +62,17 @@
         {
           "name": "prevOwner",
           "label": "Previous Owner Address",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "owner",
           "label": "Owner Address to Remove",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "_threshold",
           "label": "New Threshold",
-          "type": "TextField"
+          "type": "text"
         }
       ],
       "detailsView": [],
@@ -117,17 +117,17 @@
         {
           "name": "prevOwner",
           "label": "Previous Owner Address",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "oldOwner",
           "label": "Old Owner Address",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "newOwner",
           "label": "New Owner Address",
-          "type": "TextField"
+          "type": "address"
         }
       ],
       "detailsView": [],
@@ -172,7 +172,7 @@
         {
           "name": "_threshold",
           "label": "New Threshold",
-          "type": "TextField"
+          "type": "text"
         }
       ],
       "detailsView": [],
@@ -203,7 +203,7 @@
         {
           "name": "module",
           "label": "Module Address",
-          "type": "TextField"
+          "type": "address"
         }
       ],
       "detailsView": [],
@@ -234,12 +234,12 @@
         {
           "name": "prevModule",
           "label": "Previous Module Address",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "module",
           "label": "Module Address",
-          "type": "TextField"
+          "type": "address"
         }
       ],
       "detailsView": [],

@@ -19,9 +19,5 @@ export default function AccountAddress({ address, short = false }: AccountAddres
 
   const formattedAddress = short ? getShortAddress(address) : address;
 
-  return (
-    <StyledTypography variant="body1" component="span">
-      {formattedAddress}
-    </StyledTypography>
-  );
+  return <StyledTypography variant="body1">{formattedAddress}</StyledTypography>;
 }

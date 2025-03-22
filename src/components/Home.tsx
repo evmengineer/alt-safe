@@ -13,12 +13,12 @@ const Home: React.FC = () => {
           <ExistingSafeAccounts />
         </Grid>
         <Grid container size={12}>
-          <Grid size={6}>
+          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
             <Button onClick={() => navigate("/create")} variant="contained" fullWidth>
               Create new Safe
             </Button>
           </Grid>
-          <Grid size={6}>
+          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
             <Button onClick={() => navigate("/import")} variant="outlined" fullWidth>
               Import
             </Button>

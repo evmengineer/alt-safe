@@ -2,10 +2,9 @@ import { Button, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import type React from "react";
 import { useSafeWalletContext } from "../../../context/WalletContext";
-import { type Transaction, type TransactionSpec, TransactionType } from "../../../context/types";
+import type { Transaction, TransactionSpec } from "../../../context/types";
 import ErrorBoundary from "../../common/ErrorBoundary";
-import InputTransactionData from "../inputTransactionData/InputTransactionData";
-import TransactionInputBuilder from "../inputTransactionData/TransactionInputBuilder";
+import TransactionInputBuilder from "./TransactionInputBuilder";
 import TransactionTypePanel from "./TransactionTypePanel";
 
 interface TransactionBuilderProps {
@@ -33,22 +32,10 @@ const TransactionBuilder: React.FC<TransactionBuilderProps> = ({
 
   return (
     <Grid container spacing={2} sx={{ overflowY: "scroll", height: "60vh", scrollbarWidth: "thin" }}>
-      <Grid size={4}>
+      <Grid size={{ md: 4, sm: 12, xs: 12 }}>
         <TransactionTypePanel onSelect={handleSelectTransactionType} />
       </Grid>
-      <Grid size={8}>
-        {selectedTransactionType === "Eth transfer" && (
-          <>
-            <Typography variant="h6">ETH Transfer</Typography>
-            <InputTransactionData transactionType={TransactionType.ETH_TRANSFER} onAdd={handleAddTransaction} />
-          </>
-        )}
-        {selectedTransactionType === "Smart contract call" && (
-          <>
-            <Typography variant="h6">Smart Contract Call</Typography>
-            <InputTransactionData transactionType={TransactionType.CONTRACT_CALL} onAdd={handleAddTransaction} />
-          </>
-        )}
+      <Grid size={{ md: 8, sm: 12 }}>
         {selectedTransactionType === "Import" && (
           <>
             <Typography variant="h6">Import Transactions</Typography>

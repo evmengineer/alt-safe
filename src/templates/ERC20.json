@@ -1,5 +1,9 @@
 {
   "groupName": "ERC20",
+  "logo": {
+    "type": "character",
+    "value": "T"
+  },
   "chainIds": [0],
   "actions": [
     {
@@ -26,7 +30,7 @@
       "inputs": [
         {
           "name": "tokenAddress",
-          "type": "SelectOne",
+          "type": "selectOneWithFreeSolo",
           "label": "Token Address",
           "options": [
             {
@@ -61,20 +65,20 @@
         {
           "name": "to",
           "label": "To",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "value",
           "label": "Token amount",
-          "type": "TextField"
+          "type": "text"
         }
       ],
       "onInputUpdate": [
         {
           "variable": "context.balance",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_balance",
+            "type": "eth_call",
+            "id": "eth_call_balance",
             "data": {
               "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
               "to": "inputs.tokenAddress",
@@ -86,8 +90,8 @@
         {
           "variable": "context.decimals",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_decimals",
+            "type": "eth_call",
+            "id": "eth_call_decimals",
             "data": {
               "method": "function decimals() public view returns (uint8)",
               "to": "inputs.tokenAddress",
@@ -166,7 +170,7 @@
       "inputs": [
         {
           "name": "tokenAddress",
-          "type": "SelectOne",
+          "type": "selectOneWithFreeSolo",
           "label": "Token Address",
           "options": [
             {
@@ -210,20 +214,20 @@
         {
           "name": "spender",
           "label": "Spender",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "value",
           "label": "Token amount",
-          "type": "TextField"
+          "type": "text"
         }
       ],
       "onInputUpdate": [
         {
           "variable": "context.balance",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_balance",
+            "type": "eth_call",
+            "id": "eth_call_balance",
             "data": {
               "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
               "to": "inputs.tokenAddress",
@@ -234,8 +238,8 @@
         {
           "variable": "context.decimals",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_decimals",
+            "type": "eth_call",
+            "id": "eth_call_decimals",
             "data": {
               "method": "function decimals() public view returns (uint8)",
               "to": "inputs.tokenAddress",
@@ -246,8 +250,8 @@
         {
           "variable": "context.allowance",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_allowance",
+            "type": "eth_call",
+            "id": "eth_call_allowance",
             "data": {
               "method": "function allowance(address _owner, address _spender) public view returns (uint256 remaining)",
               "to": "inputs.tokenAddress",
@@ -322,7 +326,7 @@
       "inputs": [
         {
           "name": "tokenAddress",
-          "type": "SelectOne",
+          "type": "selectOneWithFreeSolo",
           "label": "Token Address",
           "options": [
             {
@@ -357,25 +361,25 @@
         {
           "name": "from",
           "label": "From",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "to",
           "label": "To",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "value",
           "label": "Token amount",
-          "type": "TextField"
+          "type": "text"
         }
       ],
       "onInputUpdate": [
         {
           "variable": "context.balance",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_balance",
+            "type": "eth_call",
+            "id": "eth_call_balance",
             "data": {
               "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
               "to": "inputs.tokenAddress",
@@ -386,8 +390,8 @@
         {
           "variable": "context.decimals",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_decimals",
+            "type": "eth_call",
+            "id": "eth_call_decimals",
             "data": {
               "method": "function decimals() public view returns (uint8)",
               "to": "inputs.tokenAddress",

@@ -1,5 +1,17 @@
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { Alert, Button, Container, ListItem, Paper, TextField, Tooltip, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  FormControlLabel,
+  ListItem,
+  Paper,
+  Radio,
+  RadioGroup,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Grid from "@mui/material/Grid2";
 import { readContract } from "@wagmi/core";
@@ -7,9 +19,15 @@ import { Parser } from "expr-eval";
 import { useEffect, useState } from "react";
 import type React from "react";
 import { type AbiFunction, encodeFunctionData, parseAbi, parseAbiItem } from "viem";
-import { useAccount } from "wagmi";
+import { useAccount, usePublicClient } from "wagmi";
 import { useSafeWalletContext } from "../../../context/WalletContext";
-import { type Transaction, type TransactionSpec, type TransactionType, ValidationType } from "../../../context/types";
+import {
+  type Transaction,
+  type TransactionSpec,
+  type TransactionType,
+  ValidationType,
+  ValueFetchType,
+} from "../../../context/types";
 import { config } from "../../../wagmi";
 import AccountAddress from "../../common/AccountAddress";
 
@@ -21,6 +39,7 @@ interface TransactionInputBuilderProps {
 const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd, spec }) => {
   const { chainId } = useAccount();
   const { safeAccount } = useSafeWalletContext();
+  const publicClient = usePublicClient();
 
   const parser = new Parser();
 
@@ -84,8 +103,8 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
       for (const update of spec.onInputUpdate) {
         const { variable, value } = update;
 
-        if (value.type === "rpcCall") {
-          try {
+        try {
+          if (value.type === ValueFetchType.RPC_CALL) {
             const ctx = value.data;
             const abi = parseAbi([ctx.method]) as AbiFunction[];
 
@@ -105,28 +124,43 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
               const updatedErrors = currentErrors.filter((err) => err.id !== value.id);
               return { ...prevErrors, [variable.split(".")[1]]: updatedErrors };
             });
-          } catch (error) {
-            console.warn(`Failed to fetch data for ${variable}`);
-            // update error state
+          } else if (value.type === ValueFetchType.RPC_GET_BALANCE) {
+            const ctx = value.data;
+            const arg = parser.parse(ctx.params[0]).evaluate({ context, inputs });
+            const result = (await publicClient.getBalance({ address: arg })).toString();
+
+            console.log("Fetched data for", variable, result);
+            setContext((prevContext) => ({ ...prevContext, [variable.split(".")[1]]: result }));
+
+            // Remove error with id value.id if it exists in errors
             setErrors((prevErrors) => {
-              const errorMessage = value.data.errorMessage || `Failed to fetch data for [${variable}]`;
-              const errorKey = variable.split(".")[1];
-              const currentErrors = prevErrors[errorKey] || [];
-              const updatedErrors = currentErrors.find((err) => err.id === value.id)
-                ? currentErrors
-                : [...currentErrors, { id: value.id, errorMessage }];
-              return {
-                ...prevErrors,
-                [errorKey]: updatedErrors,
-              };
+              const currentErrors = prevErrors[variable.split(".")[1]] || [];
+              const updatedErrors = currentErrors.filter((err) => err.id !== value.id);
+              return { ...prevErrors, [variable.split(".")[1]]: updatedErrors };
             });
           }
+        } catch (error) {
+          console.warn(`Failed to fetch data for ${variable}`);
+          console.log(error);
+          // update error state
+          setErrors((prevErrors) => {
+            const errorMessage = value.data.errorMessage || `Failed to fetch data for [${variable}]`;
+            const errorKey = variable.split(".")[1];
+            const currentErrors = prevErrors[errorKey] || [];
+            const updatedErrors = currentErrors.find((err) => err.id === value.id)
+              ? currentErrors
+              : [...currentErrors, { id: value.id, errorMessage }];
+            return {
+              ...prevErrors,
+              [errorKey]: updatedErrors,
+            };
+          });
         }
       }
     };
 
     updateContextValues();
-  }, [inputs]);
+  }, [inputs, publicClient]);
 
   /**
    * biome-ignore lint/correctness/useExhaustiveDependencies(context): Valdation should re-run whenever context updates
@@ -171,13 +205,21 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
       return;
     }
 
-    const abiItem = parseAbiItem(spec.functionSignature) as AbiFunction;
+    let calldata: `0x${string}` = "0x";
+    if ("data" in spec.onFinalize) {
+      calldata = parser.parse(spec.onFinalize.data).evaluate({ context, inputs });
+      if (!calldata.startsWith("0x")) {
+        throw new Error("Data must start with 0x");
+      }
+    } else if (!!spec.functionSignature && "calldataArgs" in spec.onFinalize) {
+      const abiItem = parseAbiItem(spec.functionSignature) as AbiFunction;
 
-    const calldata = encodeFunctionData({
-      abi: [abiItem],
-      functionName: abiItem.name,
-      args: spec.onFinalize.calldataArgs.map((arg) => parser.parse(arg).evaluate({ context, inputs })),
-    });
+      calldata = encodeFunctionData({
+        abi: [abiItem],
+        functionName: abiItem.name,
+        args: spec.onFinalize.calldataArgs.map((arg) => parser.parse(arg).evaluate({ context, inputs })),
+      });
+    }
 
     const transaction: Transaction = {
       type: spec.summaryView as TransactionType,
@@ -195,7 +237,7 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
 
       {spec.inputs.map((input) => (
         <div key={input.name}>
-          {input.type === "TextField" && (
+          {input.type === "text" && (
             <TextField
               key={`textfield-${spec.name}-${input.name}`}
               id={`textfield-${spec.name}-${input.name}`}
@@ -209,10 +251,82 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
             />
           )}
 
-          {input.type === "SelectOne" && (
+          {input.type === "address" && (
+            <TextField
+              key={`address-${spec.name}-${input.name}`}
+              id={`address-${spec.name}-${input.name}`}
+              label={input.label}
+              value={inputs[input.name]}
+              onChange={(e) => handleInputChange(input.name, e.target.value)}
+              error={!!errors[input.name]?.length}
+              helperText={errors[input.name]?.map((err) => err.errorMessage).join(", ")}
+              fullWidth
+              margin="normal"
+            />
+          )}
+
+          {input.type === "selectOneRadio" && (
+            <Box>
+              <Typography variant="subtitle1" gutterBottom>
+                {input.label}
+              </Typography>
+              <RadioGroup
+                row
+                name={input.name}
+                value={inputs[input.name]}
+                onChange={(e) => handleInputChange(input.name, e.target.value)}
+              >
+                {(
+                  input.options?.find((option) => option.chainId === chainId)?.options ||
+                  input.options?.find((option) => option.chainId === 0)?.options ||
+                  []
+                ).map((option) => (
+                  <FormControlLabel
+                    key={`${input.name}-${option.value}`}
+                    value={option.value}
+                    control={<Radio />}
+                    label={option.name}
+                  />
+                ))}
+              </RadioGroup>
+            </Box>
+          )}
+
+          {input.type === "selectOne" && (
             <Autocomplete
-              id={`auto-complete-${spec.name}-${input.name}`}
-              freeSolo
+              id={`selectOne-${spec.name}-${input.name}`}
+              options={
+                input.options?.find((option) => option.chainId === chainId)?.options ||
+                input.options?.find((option) => option.chainId === 0)?.options ||
+                []
+              }
+              getOptionLabel={(option) => (typeof option === "string" ? option : option.name)}
+              renderOption={(props, option) => (
+                <ListItem {...props} key={`${option.name}-${option.value}`}>
+                  <Grid container justifyContent="space-between" width="100%">
+                    <Grid>
+                      <Typography>{option.name}</Typography>
+                    </Grid>
+                    <Grid>
+                      <Typography>{option.value}</Typography>
+                    </Grid>
+                  </Grid>
+                </ListItem>
+              )}
+              renderInput={(params) => <TextField {...params} label={input.label} fullWidth margin="normal" />}
+              onInputChange={(_event, newValue) => {
+                const selected = input.options
+                  ?.find((opt) => opt.chainId === chainId)
+                  ?.options.find((opt) => opt.name === newValue);
+                handleInputChange(input.name, selected ? selected.value : newValue);
+              }}
+            />
+          )}
+
+          {input.type === "selectOneWithFreeSolo" && (
+            <Autocomplete
+              id={`selectOneWithFreeSolo-${spec.name}-${input.name}`}
+              freeSolo={true}
               options={
                 input.options?.find((option) => option.chainId === chainId)?.options ||
                 input.options?.find((option) => option.chainId === 0)?.options ||
@@ -245,15 +359,14 @@ const TransactionInputBuilder: React.FC<TransactionInputBuilderProps> = ({ onAdd
 
       {spec.detailsView.length > 0 && (
         <Paper elevation={0} sx={{ padding: 1, marginTop: 1 }}>
-          <InfoOutlinedIcon />
           <Grid container spacing={1} sx={{ overflow: "auto" }}>
             {spec.detailsView.map((detail, index) => (
               <Grid size={12} key={`${index}-${detail.label}`}>
                 <Grid container spacing={2}>
-                  <Grid size={4}>
+                  <Grid size={5}>
                     <Typography>{detail.label}</Typography>
                   </Grid>
-                  <Grid size={8}>{getDetailValue(detail.type, detail.value)} </Grid>
+                  <Grid size={7}>{getDetailValue(detail.type, detail.value)} </Grid>
                 </Grid>
               </Grid>
             ))}

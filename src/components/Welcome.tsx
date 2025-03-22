@@ -34,24 +34,24 @@ const Welcome: React.FC = () => {
           Get Started
         </Button>
         <Grid container spacing={4} size={12}>
-          <Grid size={{ md: 6, sm: 12 }}>
+          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
             <FeatureBox
               icon={<IntegrationInstructionsIcon />}
               title="Templates"
               description="Easy to extend using JSON templates"
             />
           </Grid>
-          <Grid size={{ md: 6, sm: 12 }}>
+          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
             <FeatureBox icon={<ShieldIcon />} title="Privacy" description="No trackers, No data collection" />
           </Grid>
-          <Grid size={{ md: 6, sm: 12 }}>
+          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
             <FeatureBox
               icon={<FeaturedPlayListIcon />}
               title="All-inclusive"
               description="Execute multi-sig, batched transactions"
             />
           </Grid>
-          <Grid size={{ md: 6, sm: 12 }}>
+          <Grid size={{ xs: 12, sm: 12, md: 6 }}>
             <FeatureBox
               icon={<RemoveCircleIcon />}
               title="No Backend"

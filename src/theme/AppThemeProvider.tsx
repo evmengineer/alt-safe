@@ -23,6 +23,20 @@ const safeliteTheme = createTheme({
   },
   typography: {
     fontFamily: "'IBM Plex Mono', monospace",
+    h1: {
+      fontWeight: 700,
+      fontSize: "2rem", // Default for xs
+      "@media (min-width:600px)": { fontSize: "2.5rem" }, // sm
+    },
+    h2: {
+      fontWeight: 600,
+      fontSize: "1.8rem",
+      "@media (min-width:600px)": { fontSize: "2.2rem" },
+    },
+    body1: {
+      fontSize: "1rem",
+      "@media (min-width:600px)": { fontSize: "1.1rem" },
+    },
   },
   components: {
     MuiButtonBase: {

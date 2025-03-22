@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader, Divider } from "@mui/material";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { Card, CardContent, CardHeader, IconButton, List, ListItem } from "@mui/material";
 import type React from "react";
 import type { Transaction } from "../../context/types";
 import TransactionCard from "./transactionBuilder/TransactionCard";
@@ -15,16 +16,24 @@ const Summary: React.FC<SummaryProps> = ({ transactions, handleDeleteTransaction
     <Card sx={{ minHeight: "75vh", maxHeight: "75vh", overflowY: "scroll", borderRadius: 0 }}>
       <CardHeader title="Summary" subheader={`Count: ${transactions.length}`} />
       <CardContent>
-        {transactions.map((transaction, index) => (
-          <div key={`${transaction.type}-${index}`}>
-            <TransactionCard
-              viewOnly={viewOnly}
-              transaction={{ ...transaction, id: index }}
-              onDelete={handleDeleteTransaction}
-            />
-            <Divider />
-          </div>
-        ))}
+        <List>
+          {transactions.map((transaction, index) => (
+            <ListItem
+              disablePadding
+              sx={{ borderBottom: 1, borderColor: "divider" }}
+              key={`${transaction.type}-${index}`}
+              secondaryAction={
+                !viewOnly && (
+                  <IconButton edge="end" aria-label="cancel" onClick={() => handleDeleteTransaction(index)}>
+                    <CancelIcon />
+                  </IconButton>
+                )
+              }
+            >
+              <TransactionCard transaction={transaction} />
+            </ListItem>
+          ))}
+        </List>
       </CardContent>
     </Card>
   );

@@ -1,5 +1,9 @@
 {
   "groupName": "Aave",
+  "logo": {
+    "type": "url",
+    "value": "https://cryptologos.cc/logos/aave-aave-logo.svg?v=040"
+  },
   "chainIds": [0],
   "actions": [
     {
@@ -27,27 +31,27 @@
         {
           "name": "asset",
           "label": "Token Address",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "pool",
           "label": "Pool Address",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "amount",
           "label": "Token Amount",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "onBehalfOf",
           "label": "Behalf Of",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "referralCode",
           "label": "Referral Code",
-          "type": "TextField"
+          "type": "text"
         }
       ],
       "detailsView": [
@@ -67,8 +71,8 @@
         {
           "variable": "context.decimals",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_decimals",
+            "type": "eth_call",
+            "id": "eth_call_decimals",
             "data": {
               "method": "function decimals() public view returns (uint8)",
               "to": "inputs.asset",
@@ -80,8 +84,8 @@
         {
           "variable": "context.allowance",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_allowance",
+            "type": "eth_call",
+            "id": "eth_call_allowance",
             "data": {
               "method": "function allowance(address _owner, address _spender) public view returns (uint256 remaining)",
               "to": "inputs.asset",
@@ -93,8 +97,8 @@
         {
           "variable": "context.balance",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_balance",
+            "type": "eth_call",
+            "id": "eth_call_balance",
             "data": {
               "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
               "to": "inputs.asset",
@@ -136,22 +140,22 @@
         {
           "name": "pool",
           "label": "Pool Address",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "asset",
           "label": "Token Address",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "amount",
           "label": "Token Amount",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "to",
           "label": "Recipient Address",
-          "type": "TextField"
+          "type": "text"
         }
       ],
       "detailsView": [
@@ -166,8 +170,8 @@
         {
           "variable": "context.decimals",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_decimals",
+            "type": "eth_call",
+            "id": "eth_call_decimals",
             "data": {
               "method": "function decimals() public view returns (uint8)",
               "to": "inputs.asset",
@@ -179,8 +183,8 @@
         {
           "variable": "context.balance",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_balance",
+            "type": "eth_call",
+            "id": "eth_call_balance",
             "data": {
               "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
               "to": "inputs.asset",
@@ -217,32 +221,47 @@
         {
           "name": "pool",
           "label": "Pool Address",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "asset",
           "label": "Token Address",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "amount",
           "label": "Borrow Amount",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "interestRateMode",
-          "label": "Interest Rate Mode (1 for Stable, 2 for Variable)",
-          "type": "TextField"
+          "label": "Interest Rate Mode",
+          "type": "selectOneRadio",
+          "options": [
+            {
+              "chainId": 0,
+              "options": [
+                {
+                  "name": "Stable",
+                  "value": "1"
+                },
+                {
+                  "name": "Variable",
+                  "value": "2"
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "referralCode",
           "label": "Referral Code",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "onBehalfOf",
           "label": "On Behalf Of",
-          "type": "TextField"
+          "type": "text"
         }
       ],
       "detailsView": [
@@ -257,8 +276,8 @@
         {
           "variable": "context.decimals",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_decimals",
+            "type": "eth_call",
+            "id": "eth_call_decimals",
             "data": {
               "method": "function decimals() public view returns (uint8)",
               "to": "inputs.asset",
@@ -270,8 +289,8 @@
         {
           "variable": "context.balance",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_balance",
+            "type": "eth_call",
+            "id": "eth_call_balance",
             "data": {
               "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
               "to": "inputs.asset",
@@ -314,27 +333,27 @@
         {
           "name": "pool",
           "label": "Pool Address",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "asset",
           "label": "Token Address",
-          "type": "TextField"
+          "type": "address"
         },
         {
           "name": "amount",
           "label": "Repay Amount",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "interestRateMode",
           "label": "Interest Rate Mode (1 for Stable, 2 for Variable)",
-          "type": "TextField"
+          "type": "text"
         },
         {
           "name": "onBehalfOf",
           "label": "On Behalf Of",
-          "type": "TextField"
+          "type": "address"
         }
       ],
       "detailsView": [
@@ -349,8 +368,8 @@
         {
           "variable": "context.decimals",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_decimals",
+            "type": "eth_call",
+            "id": "eth_call_decimals",
             "data": {
               "method": "function decimals() public view returns (uint8)",
               "to": "inputs.asset",
@@ -362,8 +381,8 @@
         {
           "variable": "context.balance",
           "value": {
-            "type": "rpcCall",
-            "id": "rpcCall_balance",
+            "type": "eth_call",
+            "id": "eth_call_balance",
             "data": {
               "method": "function balanceOf(address _owner) public view returns (uint256 balance)",
               "to": "inputs.asset",

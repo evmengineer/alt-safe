@@ -6,8 +6,10 @@ import { type Address, isAddress, isAddressEqual, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 import { usePublicClient } from "wagmi";
 import { STORAGE_KEY } from "../constants";
-import { type SafeAccount, useSafeWalletContext } from "../context/WalletContext";
+import { useSafeWalletContext } from "../context/WalletContext";
+import type { SafeAccount } from "../context/types";
 import { type SafeStorage, fetchStorageData } from "../utils/storageReader";
+import NameAndLabels from "./common/NameAndLabels";
 import ViewSafeStorage from "./common/SafeStorage";
 import Title from "./common/Title";
 
@@ -15,7 +17,8 @@ const ImportSafe: React.FC = () => {
   const { setSafeAccount, storage } = useSafeWalletContext();
   const account = useAccount();
   const [address, setAddress] = useState<Address>(zeroAddress);
-  const [name, setName] = useState<string>();
+  const [safeName, setSafeName] = useState<string>("");
+  const [safeLabels, setSafeLabels] = useState<string[]>([]);
   const [error, setError] = useState<string>();
   const [imported, setImported] = useState<boolean>(false);
   const publicClient = usePublicClient();
@@ -48,7 +51,9 @@ const ImportSafe: React.FC = () => {
 
       // No Safe accounts in storage
       if (safeAccounts === null) {
-        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [{ address, chainIds: [account.chainId], name }]);
+        await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [
+          { address, chainIds: [account.chainId], name: safeName, labels: safeLabels },
+        ]);
         setImported(true);
         return;
       }
@@ -61,7 +66,7 @@ const ImportSafe: React.FC = () => {
         setImported(true);
         await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [
           ...safeAccounts,
-          { address, chainIds: [account.chainId], name },
+          { address, chainIds: [account.chainId], name: safeName, labels: safeLabels },
         ]);
         return;
       }
@@ -71,7 +76,12 @@ const ImportSafe: React.FC = () => {
 
         const updatedSafeAccounts = [
           ...safeAccounts.filter((acc) => acc.address !== address),
-          { address, chainIds: [...safeAccount.chainIds, account.chainId] },
+          {
+            address,
+            chainIds: [...safeAccount.chainIds, account.chainId],
+            name: safeName,
+            labels: safeLabels,
+          },
         ];
         await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, updatedSafeAccounts);
         setImported(true);
@@ -114,12 +124,7 @@ const ImportSafe: React.FC = () => {
       {safeStorage && (
         <Grid size={12} spacing={1}>
           <Grid size={12}>
-            <TextField
-              fullWidth
-              value={name}
-              onChange={(e) => setName(e.target.value as `0x${string}`)}
-              placeholder="Enter a readable name for the Safe"
-            />
+            <NameAndLabels name={safeName} setName={setSafeName} labels={safeLabels} setLabels={setSafeLabels} />
           </Grid>
           <Grid size={12}>
             <Button onClick={handleImport} variant="contained">
@@ -131,7 +136,7 @@ const ImportSafe: React.FC = () => {
       {imported && (
         <Grid size={12}>
           <Alert severity="success">
-            Safe imported successfully. Go to
+            Safe imported successfully. Go to{" "}
             <Link
               component="button"
               onClick={() => {
@@ -139,7 +144,7 @@ const ImportSafe: React.FC = () => {
               }}
             >
               home
-            </Link>
+            </Link>{" "}
             to start using Safe.
           </Alert>
         </Grid>

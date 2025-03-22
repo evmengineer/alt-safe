@@ -7,10 +7,12 @@ import { type Address, zeroAddress } from "viem";
 import { useAccount, usePublicClient } from "wagmi";
 import safeProxyFactoryABI from "../../abis/SafeProxyFactory.json";
 import { STORAGE_KEY } from "../../constants";
-import { type SafeAccount, useSafeWalletContext } from "../../context/WalletContext";
+import { useSafeWalletContext } from "../../context/WalletContext";
+import type { SafeAccount } from "../../context/types";
 import { calculateInitData, getProxyAddress } from "../../utils/utils";
 import { config } from "../../wagmi";
 import AccountAddress from "../common/AccountAddress";
+import NameAndLabels from "../common/NameAndLabels";
 import OwnerList from "./OwnerList";
 import SaltSelector from "./SaltSelector";
 import ThresholdSelector from "./Threshold";
@@ -35,6 +37,10 @@ const CreateSafe: React.FC = () => {
   const [singletonL2, setSingletonL2] = useState<string>(safeDeployment?.singletonL2 || "");
   const [singleton, setSingleton] = useState<string>(safeDeployment?.singleton || "");
   const [useSingletonL2, setUseSingletonL2] = useState<boolean>(publicClient?.chain.sourceId !== undefined);
+
+  // New state for account name and labels
+  const [safeName, setSafeName] = useState<string>("");
+  const [safeLabels, setSafeLabels] = useState<string[]>([]);
 
   // Update initData when owners or threshold change
   useEffect(() => {
@@ -119,7 +125,9 @@ const CreateSafe: React.FC = () => {
 
         // No account in storage
         if (!existingAccounts) {
-          await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [{ address: newSafeAddress, chainIds: [account.chainId] }]);
+          await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [
+            { address: newSafeAddress, chainIds: [account.chainId], name: safeName, labels: safeLabels },
+          ]);
           return;
         }
 
@@ -128,12 +136,17 @@ const CreateSafe: React.FC = () => {
         if (!safeAccount) {
           await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, [
             ...existingAccounts,
-            { address: newSafeAddress, chainIds: [account.chainId] },
+            { address: newSafeAddress, chainIds: [account.chainId], name: safeName, labels: safeLabels },
           ]);
         } else {
           const updatedSafeAccounts = [
             ...existingAccounts.filter((acc) => acc.address !== newSafeAddress),
-            { address: newSafeAddress, chainIds: [...safeAccount.chainIds, account.chainId] },
+            {
+              address: newSafeAddress,
+              chainIds: [...safeAccount.chainIds, account.chainId],
+              name: safeName,
+              labels: safeLabels,
+            },
           ];
           await storage.setItem(STORAGE_KEY.SAFE_ACCOUNTS, updatedSafeAccounts);
         }
@@ -145,6 +158,9 @@ const CreateSafe: React.FC = () => {
     <>
       <Typography variant="h4">Create Safe Account</Typography>
       <Grid container spacing={2}>
+        <Grid size={12}>
+          <NameAndLabels name={safeName} setName={setSafeName} labels={safeLabels} setLabels={setSafeLabels} />
+        </Grid>
         <Grid size={12}>
           <OwnerList owners={owners} onOwnerChange={handleOwnerChange} onRemoveOwner={handleRemoveOwner} />
         </Grid>
@@ -247,7 +263,7 @@ const CreateSafe: React.FC = () => {
               >
                 home
               </Link>
-              to start using Safe if transaction succeeded.
+              &nbsp;to start using Safe if transaction succeeded.
             </Alert>
           )}
         </Grid>

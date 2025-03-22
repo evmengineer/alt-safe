@@ -36,12 +36,6 @@ interface WalletContextType {
   txBuilderSpec: TransactionGroupSpec[];
 }
 
-export type SafeAccount = {
-  address: Address;
-  chainIds: number[];
-  name?: string;
-};
-
 export type CustomDeployment = {
   chainId: number;
   deployment: SafeDeployment;
